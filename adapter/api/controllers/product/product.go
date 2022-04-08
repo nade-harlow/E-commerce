@@ -3,6 +3,7 @@ package product
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/nade-harlow/E-commerce/core/models"
+	"github.com/nade-harlow/E-commerce/core/utils/response"
 	"github.com/nade-harlow/E-commerce/ports"
 	"log"
 )
@@ -27,5 +28,6 @@ func (products *ProductController) GetProduct() gin.HandlerFunc {
 			log.Println(err.Error())
 			return
 		}
+		response.Json(c, 200, "Product created successfully", nil, nil)
 	}
 }
