@@ -3,8 +3,11 @@ package server
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	product2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/product"
 	"github.com/nade-harlow/E-commerce/adapter/api/routes"
 	"github.com/nade-harlow/E-commerce/adapter/repository/database/client"
+	"github.com/nade-harlow/E-commerce/core/repositories"
+	"github.com/nade-harlow/E-commerce/ports"
 	"log"
 	"net/http"
 	"os"
@@ -14,8 +17,9 @@ import (
 
 func Start() {
 	router := gin.Default()
-	routes.DefineRoutes(router)
-	client.InitializeConnection()
+	db := client.InitializeConnection()
+	prod := product2.NewProductController(ports.NewService(repositories.New(db)))
+	routes.DefineRoutes(router, prod)
 	port := ":" + os.Getenv("PORT")
 	if port == "" {
 		port = ":8080"
