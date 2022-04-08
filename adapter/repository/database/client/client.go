@@ -22,7 +22,7 @@ func InitializeConnection() {
 		DBName: os.Getenv("DB_NAME"),
 	})
 	if err != nil {
-		log.Fatal("Failed to connect to mysql database")
+		log.Fatal("Failed to connect to postgresql database")
 	}
 	err = postgresql.SetupDatabase(db)
 	if err != nil {
