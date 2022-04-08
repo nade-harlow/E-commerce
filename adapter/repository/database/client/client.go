@@ -2,18 +2,13 @@ package client
 
 import (
 	"github.com/nade-harlow/E-commerce/adapter/repository/database/postgresql"
-	"github.com/nade-harlow/E-commerce/core/repository"
+	"github.com/nade-harlow/E-commerce/core/models"
 	"gorm.io/gorm"
 	"log"
 	"os"
 )
 
-var (
-	DB   *gorm.DB
-	REPO *repository.Repository
-)
-
-func InitializeConnection() {
+func InitializeConnection() *gorm.DB {
 	db, err := postgresql.New(&postgresql.Config{
 		User:   os.Getenv("DB_USER"),
 		Pass:   os.Getenv("DB_PASS"),
@@ -24,11 +19,9 @@ func InitializeConnection() {
 	if err != nil {
 		log.Fatal("Failed to connect to postgresql database")
 	}
-	err = postgresql.SetupDatabase(db)
+	err = postgresql.SetupDatabase(db, &models.Product{})
 	if err != nil {
 		log.Fatal("Failed to setup database")
 	}
-	repo := repository.New(db)
-	DB = db
-	REPO = repo
+	return db
 }
