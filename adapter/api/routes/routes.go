@@ -5,9 +5,9 @@ import (
 	"github.com/nade-harlow/E-commerce/adapter/api/controllers/product"
 )
 
-func DefineRoutes(r *gin.Engine) {
+func DefineRoutes(r *gin.Engine, pc *product.ProductController) {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, map[string]string{"message": "Hello World!"})
 	})
-	r.GET("/products", product.GetProduct())
+	r.POST("/products", pc.GetProduct())
 }
