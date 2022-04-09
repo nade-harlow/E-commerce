@@ -14,7 +14,7 @@ type User struct {
 	DateOfBirth string         `json:"dateofbirth"`
 	Avatar      string         `json:"avatar"`
 	Email       string         `gorm:"unique" json:"email"`
-	Password    string         `json:"-"`
+	Password    string         `json:"password,omitempty"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-" `
