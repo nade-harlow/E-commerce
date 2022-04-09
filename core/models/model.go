@@ -9,7 +9,7 @@ type Model struct {
 	ID string `gorm:"primaryKey" json:"id"`
 }
 
-func (u *Model) BeforeCreate(tx *gorm.DB) {
+func (u *Model) BeforeCreate(tx *gorm.DB) (err error) {
 	u.ID = uuid.New().String()
 	return
 }
