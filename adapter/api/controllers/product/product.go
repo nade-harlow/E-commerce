@@ -26,6 +26,7 @@ func (products *ProductController) GetProduct() gin.HandlerFunc {
 		err := products.ProductService.Create(&product)
 		if err != nil {
 			log.Println(err.Error())
+			response.Json(c, 500, "Error creating Product", nil, err.Error())
 			return
 		}
 		response.Json(c, 200, "Product created successfully", nil, nil)
