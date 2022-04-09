@@ -7,7 +7,7 @@ import (
 
 type Product struct {
 	Model
-	Name      string         `gorm:"unique" json:"name"`
+	Name      string         ` json:"name"`
 	Price     int64          `json:"price"`
 	Quantity  int64          `json:"quantity"`
 	CreatedAt time.Time      `json:"created_at"`
