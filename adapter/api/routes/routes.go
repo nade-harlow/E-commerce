@@ -9,5 +9,5 @@ func DefineRoutes(r *gin.Engine, pc *product.ProductController) {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, map[string]string{"message": "Hello World!"})
 	})
-	r.POST("/products", pc.GetProduct())
+	r.POST("/products", pc.AddProduct())
 }

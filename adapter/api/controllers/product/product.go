@@ -19,7 +19,7 @@ func NewProductController(productService ports.Service) *ProductController {
 	}
 }
 
-func (products *ProductController) GetProduct() gin.HandlerFunc {
+func (products *ProductController) AddProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		product := models.Product{}
 		c.ShouldBindJSON(&product)
