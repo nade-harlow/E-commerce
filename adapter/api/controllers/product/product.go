@@ -23,7 +23,7 @@ func (products *ProductController) AddProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		product := models.Product{}
 		c.ShouldBindJSON(&product)
-		err := products.ProductService.Create(&product)
+		err := products.ProductService.CreateProduct(&product)
 		if err != nil {
 			log.Println(err.Error())
 			response.Json(c, 500, "Error creating Product", nil, err.Error())

@@ -3,7 +3,7 @@ package ports
 import "github.com/nade-harlow/E-commerce/core/models"
 
 type Service interface {
-	Create(product *models.Product) error
+	CreateProduct(product *models.Product) error
 }
 
 type service struct {
@@ -16,6 +16,6 @@ func NewService(repository Repository) Service {
 	}
 }
 
-func (s *service) Create(product *models.Product) error {
-	return s.repository.Create(product)
+func (s *service) CreateProduct(product *models.Product) error {
+	return s.repository.CreateProduct(product)
 }
