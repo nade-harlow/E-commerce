@@ -4,16 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nade-harlow/E-commerce/core/models"
 	"github.com/nade-harlow/E-commerce/core/utils/response"
-	"github.com/nade-harlow/E-commerce/ports"
+	"github.com/nade-harlow/E-commerce/ports/services"
 	"log"
 )
 
 type ProductController struct {
-	ProductService ports.Service
+	ProductService services.ProductServices
 	route          *gin.Engine
 }
 
-func NewProductController(productService ports.Service) *ProductController {
+func NewProductController(productService services.ProductServices) *ProductController {
 	return &ProductController{
 		ProductService: productService,
 	}
