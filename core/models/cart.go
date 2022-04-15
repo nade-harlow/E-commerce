@@ -7,7 +7,9 @@ import (
 
 type Cart struct {
 	Model
-	Products  Product        `json:"products"`
+	ProductID string         `json:"product_id"`
+	Product   Product        `json:"products"`
+	Quantity  int            `json:"quantity"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-" `
