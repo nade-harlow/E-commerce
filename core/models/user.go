@@ -15,6 +15,8 @@ type User struct {
 	Avatar      string         `json:"avatar"`
 	Email       string         `gorm:"unique" json:"email"`
 	Password    string         `json:"password,omitempty"`
+	CartID      string         `json:"cart_id"`
+	Cart        Cart           `json:"cart"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-" `
