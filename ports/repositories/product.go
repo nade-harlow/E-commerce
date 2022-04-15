@@ -1,7 +1,7 @@
-package ports
+package repositories
 
 import "github.com/nade-harlow/E-commerce/core/models"
 
-type Repository interface {
+type ProductRepository interface {
 	CreateProduct(product *models.Product) error
 }
