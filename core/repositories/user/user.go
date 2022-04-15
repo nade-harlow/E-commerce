@@ -1,12 +1,21 @@
-package repositories
+package user
 
 import (
 	"errors"
 	"github.com/nade-harlow/E-commerce/core/models"
 	"github.com/nade-harlow/E-commerce/core/utils"
+	"gorm.io/gorm"
 )
 
-func (repo *Repository) GetUserByEmail(email string) (*models.User, error) {
+type UserRepository struct {
+	DB *gorm.DB
+}
+
+func New(DB *gorm.DB) *UserRepository {
+	return &UserRepository{DB}
+}
+
+func (repo *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	user := &models.User{}
 	err := repo.DB.Where("email = ?", email).First(user).Error
 	if err != nil {
@@ -15,7 +24,7 @@ func (repo *Repository) GetUserByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
-func (repo *Repository) GetUserByID(id string) (*models.User, error) {
+func (repo *UserRepository) GetUserByID(id string) (*models.User, error) {
 	user := &models.User{}
 	err := repo.DB.Where("id = ?", id).First(user).Error
 	if err != nil {
@@ -24,7 +33,7 @@ func (repo *Repository) GetUserByID(id string) (*models.User, error) {
 	return user, nil
 }
 
-func (repo *Repository) GetUserByUsername(username string) (*models.User, error) {
+func (repo *UserRepository) GetUserByUsername(username string) (*models.User, error) {
 	user := &models.User{}
 	err := repo.DB.Where("username = ?", username).First(user).Error
 	if err != nil {
@@ -33,7 +42,7 @@ func (repo *Repository) GetUserByUsername(username string) (*models.User, error)
 	return user, nil
 }
 
-func (repo *Repository) SignUpUser(user *models.User) error {
+func (repo *UserRepository) SignUpUser(user *models.User) error {
 	userByEmail, err := repo.GetUserByEmail(user.Email)
 	if err != nil {
 		return err
@@ -52,7 +61,7 @@ func (repo *Repository) SignUpUser(user *models.User) error {
 	return nil
 }
 
-func (repo *Repository) SignInUser(user *models.User) error {
+func (repo *UserRepository) SignInUser(user *models.User) error {
 	userByEmail, err := repo.GetUserByEmail(user.Email)
 	if err != nil {
 		return err
