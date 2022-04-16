@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"github.com/nade-harlow/E-commerce/core/models"
+	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils"
 	"gorm.io/gorm"
 	"strings"
@@ -81,16 +82,16 @@ func (repo *UserRepository) SignUpUser(user *models.User) error {
 	return nil
 }
 
-func (repo *UserRepository) SignInUser(user *models.User) error {
+func (repo *UserRepository) SignInUser(user *requests.UserLoginRequest) (*models.User, error) {
 	userByEmail, err := repo.GetUserByEmail(user.Email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if userByEmail == nil {
-		return errors.New("user with this email does not exist")
+		return nil, errors.New("user with this email does not exist")
 	}
 	if ok := utils.CheckPasswordHash(user.Password, userByEmail.Password); !ok {
-		return errors.New("incorrect password")
+		return nil, errors.New("incorrect email or password")
 	}
-	return nil
+	return userByEmail, nil
 }

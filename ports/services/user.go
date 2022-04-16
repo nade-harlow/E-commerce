@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/nade-harlow/E-commerce/core/models"
+	"github.com/nade-harlow/E-commerce/core/requests"
 	repository2 "github.com/nade-harlow/E-commerce/ports/repositories"
 )
 
@@ -10,7 +11,7 @@ type UserServices interface {
 	GetUserByID(id string) (*models.User, error)
 	GetUserByUsername(username string) (*models.User, error)
 	SignUpUser(user *models.User) error
-	SignInUser(user *models.User) error
+	SignInUser(user *requests.UserLoginRequest) (*models.User, error)
 }
 
 type UserService struct {
@@ -39,6 +40,6 @@ func (userr *UserService) SignUpUser(user *models.User) error {
 	return userr.repository.SignUpUser(user)
 }
 
-func (userr UserService) SignInUser(user *models.User) error {
+func (userr UserService) SignInUser(user *requests.UserLoginRequest) (*models.User, error) {
 	return userr.repository.SignInUser(user)
 }
