@@ -15,4 +15,5 @@ func ProductRoutes(r *gin.Engine, pc *product.ProductController) {
 
 func UserRoutes(r *gin.Engine, uc *user.UserController) {
 	r.POST("/signup", uc.SignUpUser())
+	r.POST("/login", uc.SignInUser())
 }
