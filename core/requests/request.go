@@ -10,3 +10,8 @@ type UserRequest struct {
 	Email       string `gorm:"unique" json:"email"`
 	Password    string `json:"password,omitempty"`
 }
+
+type UserLoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
