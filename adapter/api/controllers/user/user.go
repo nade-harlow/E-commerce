@@ -42,6 +42,7 @@ func (user *UserController) SignUpUser() gin.HandlerFunc {
 		data := map[string]interface{}{
 			"token":           token,
 			"user_id":         userRequest.ID,
+			"role":            userRequest.Role,
 			"user_first_name": userRequest.FirstName,
 		}
 		response.Json(c, 200, "User created", data, nil)
