@@ -10,7 +10,8 @@ import (
 func GenerateToken(user *models.User) (string, error) {
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
-		"exp":     time.Now().Add(time.Hour * 2400000).Unix(),
+		"role":    user.Role,
+		"exp":     time.Now().Add(time.Hour * 4).Unix(),
 	}).SignedString([]byte(os.Getenv("JWT_SECRET")))
 }
 
