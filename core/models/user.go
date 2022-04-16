@@ -9,8 +9,8 @@ type User struct {
 	Model
 	FirstName string         `json:"first_name"`
 	LastName  string         `json:"last_name"`
-	Username  string         `json:"username"`
-	Role      string         `json:"role"`
+	Username  string         `gorm:"unique" json:"username"`
+	Role      string         `json:"role,omitempty"`
 	Email     string         `gorm:"unique" json:"email"`
 	Password  string         `json:"password,omitempty"`
 	Telephone string         `json:"telephone"`
