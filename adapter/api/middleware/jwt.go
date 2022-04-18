@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func AuthurizeToken() gin.HandlerFunc {
+func AuthorizeToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		token, err := utils.ParseToken(authHeader)
@@ -17,7 +17,7 @@ func AuthurizeToken() gin.HandlerFunc {
 			return
 		}
 		claims := token.Claims.(jwt.MapClaims)
-		userId := int64(claims["user_id"].(float64))
+		userId := claims["user_id"].(string)
 
 		c.Set("userId", userId)
 
