@@ -10,6 +10,7 @@ type Product struct {
 	Name              string          ` json:"name"`
 	Description       string          ` json:"description"`
 	Sku               string          ` json:"sku"`
+	ProductImage      []ProductImage  ` json:"product_image"`
 	ProductCategoryID string          ` json:"category_id"`
 	ProductCategory   ProductCategory ` json:"-"`
 	Price             float32         `json:"price"`
@@ -26,6 +27,15 @@ type ProductCategory struct {
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-" `
+}
+
+type ProductImage struct {
+	Model
+	ProductID string `json:"product_id"`
+	Image     string `json:"image"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-" `
 }
 
 //type ProductInventory struct {

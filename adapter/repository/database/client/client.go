@@ -20,7 +20,7 @@ func InitializeConnection() *gorm.DB {
 		log.Fatal("Failed to connect to postgresql database")
 	}
 	err = postgresql.SetupDatabase(db, &models.User{}, &models.UserAddress{}, &models.UserPayment{}, &models.UserPayment{},
-		&models.Product{}, &models.ProductCategory{}, &models.CartItem{},
+		&models.Product{}, &models.ProductCategory{}, &models.CartItem{}, &models.ProductImage{},
 		&models.ShoppingSession{}, &models.OrderDetails{}, &models.OrderItems{}, &models.PaymentDetails{})
 	if err != nil {
 		log.Fatal("Failed to setup database")
