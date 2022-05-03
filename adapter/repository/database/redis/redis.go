@@ -3,8 +3,8 @@ package redis
 import (
 	"context"
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/go-redis/redis/v8"
+	"log"
 	"os"
 	"time"
 )
@@ -33,7 +33,7 @@ func RemoveRedisKey(key string) {
 	err := redis.Del(context.Background(), key).Err()
 
 	if err != nil {
-		spew.Dump(err)
+		log.Println(err)
 	}
 }
 
@@ -45,7 +45,7 @@ func ValidateRedisKey(key string) (valid bool, value interface{}) {
 	value, err := redis.Get(context.Background(), key).Result()
 
 	if err != nil {
-		spew.Dump(err)
+		log.Println(err)
 		return false, nil
 	}
 	return true, value
