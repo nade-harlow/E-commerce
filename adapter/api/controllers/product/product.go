@@ -33,7 +33,19 @@ func (products *ProductController) AddProduct() gin.HandlerFunc {
 	}
 }
 
-func (products ProductController) DeleteProduct() gin.HandlerFunc {
+func (products ProductController) GetAllProduct() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		product, err := products.ProductService.GetAllProducts()
+		if err != nil {
+			log.Println(err.Error())
+			response.Json(c, 500, "Error getting all Product", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "Product retrieved successfully", product, nil)
+	}
+}
+
+func (products *ProductController) DeleteProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 		err := products.ProductService.DeleteProduct(id)
@@ -60,7 +72,7 @@ func (products *ProductController) AddProductCategory() gin.HandlerFunc {
 	}
 }
 
-func (products ProductController) RemoveProductCategory() gin.HandlerFunc {
+func (products *ProductController) RemoveProductCategory() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		categoryID := c.Param("id")
 		err := products.ProductService.DeleteProductCategory(categoryID)

@@ -20,6 +20,14 @@ func (repo *ProductRepository) CreateProduct(product *models.Product) error {
 	return nil
 }
 
+func (repo ProductRepository) GetAllProducts() ([]models.Product, error) {
+	var products []models.Product
+	if tx := repo.DB.Find(&products); tx.Error != nil {
+		return nil, tx.Error
+	}
+	return products, nil
+}
+
 func (repo *ProductRepository) DeleteProduct(productID string) error {
 	if tx := repo.DB.Where("id = ?", productID).Delete(&models.Product{}); tx.Error != nil {
 		return tx.Error
