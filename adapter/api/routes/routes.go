@@ -12,6 +12,7 @@ func ProductRoutes(r *gin.Engine, pc *product.ProductController) {
 		c.JSON(200, map[string]string{"message": "Hello World!"})
 	})
 	r.POST("/products", middleware.AuthorizeToken(), pc.AddProduct())
+	r.POST("/products/category/add", middleware.AuthorizeToken(), pc.AddProductCategory())
 }
 
 func UserRoutes(r *gin.Engine, uc *user.UserController) {
