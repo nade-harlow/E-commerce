@@ -6,6 +6,7 @@ import (
 	"github.com/nade-harlow/E-commerce/core/utils/response"
 	"github.com/nade-harlow/E-commerce/ports/services"
 	"log"
+	"strconv"
 )
 
 type ProductController struct {
@@ -21,9 +22,32 @@ func NewProductController(productService services.ProductServices) *ProductContr
 
 func (products *ProductController) AddProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		product := models.Product{}
-		c.ShouldBindJSON(&product)
-		err := products.ProductService.CreateProduct(&product)
+		price, _ := strconv.Atoi(c.PostForm("price"))
+		qty, _ := strconv.Atoi(c.PostForm("quantity"))
+
+		form, err := c.MultipartForm()
+		if err != nil {
+			log.Printf("error parsing multipart form: %v", err)
+			response.Json(c, 500, "error parsing multipart form", nil, err.Error())
+			return
+		}
+		productImages := form.File["image"]
+		images, err := products.ProductService.UploadFileToS3(productImages)
+		if err != nil {
+			response.Json(c, 500, "error Uploading file to S3", nil, err.Error())
+			return
+		}
+		product := models.Product{
+			Name:              c.PostForm("name"),
+			Description:       c.PostForm("description"),
+			Sku:               c.PostForm("sku"),
+			ProductImage:      images,
+			ProductCategoryID: c.PostForm("category_id"),
+			ProductCategory:   models.ProductCategory{},
+			Price:             float32(price),
+			Quantity:          int16(qty),
+		}
+		err = products.ProductService.CreateProduct(&product)
 		if err != nil {
 			log.Println(err.Error())
 			response.Json(c, 500, "Error creating Product", nil, err.Error())

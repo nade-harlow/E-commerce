@@ -32,7 +32,7 @@ type ProductCategory struct {
 type ProductImage struct {
 	Model
 	ProductID string `json:"product_id"`
-	Image     string `json:"image"`
+	Url       string `json:"image"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-" `
