@@ -26,3 +26,10 @@ func (repo *ProductRepository) CreateProductCategory(category *models.ProductCat
 	}
 	return nil
 }
+
+func (repo *ProductRepository) DeleteProductCategory(categoryID string) error {
+	if tx := repo.DB.Where("id = ?", categoryID).Delete(&models.ProductCategory{}); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}

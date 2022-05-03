@@ -46,3 +46,16 @@ func (products *ProductController) AddProductCategory() gin.HandlerFunc {
 		response.Json(c, 200, "Product Category created successfully", nil, nil)
 	}
 }
+
+func (products ProductController) RemoveProductCategory() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		categoryID := c.Param("id")
+		err := products.ProductService.DeleteProductCategory(categoryID)
+		if err != nil {
+			log.Println(err.Error())
+			response.Json(c, 500, "Error deleting Product Category", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "Product Category deleted successfully", nil, nil)
+	}
+}

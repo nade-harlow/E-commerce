@@ -8,6 +8,7 @@ import (
 type ProductServices interface {
 	CreateProduct(product *models.Product) error
 	CreateProductCategory(category *models.ProductCategory) error
+	DeleteProductCategory(categoryID string) error
 }
 
 type ProductService struct {
@@ -26,4 +27,8 @@ func (p *ProductService) CreateProduct(product *models.Product) error {
 
 func (p *ProductService) CreateProductCategory(category *models.ProductCategory) error {
 	return p.repository.CreateProductCategory(category)
+}
+
+func (p ProductService) DeleteProductCategory(categoryID string) error {
+	return p.repository.DeleteProductCategory(categoryID)
 }
