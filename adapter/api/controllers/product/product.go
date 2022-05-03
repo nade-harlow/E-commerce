@@ -33,6 +33,19 @@ func (products *ProductController) AddProduct() gin.HandlerFunc {
 	}
 }
 
+func (products ProductController) DeleteProduct() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+		err := products.ProductService.DeleteProduct(id)
+		if err != nil {
+			log.Println(err.Error())
+			response.Json(c, 500, "Error deleting Product", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "Product deleted successfully", nil, nil)
+	}
+}
+
 func (products *ProductController) AddProductCategory() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		category := models.ProductCategory{}

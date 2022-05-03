@@ -7,6 +7,7 @@ import (
 
 type ProductServices interface {
 	CreateProduct(product *models.Product) error
+	DeleteProduct(productID string) error
 	CreateProductCategory(category *models.ProductCategory) error
 	DeleteProductCategory(categoryID string) error
 }
@@ -23,6 +24,10 @@ func NewProductService(repository repository2.ProductRepository) ProductServices
 
 func (p *ProductService) CreateProduct(product *models.Product) error {
 	return p.repository.CreateProduct(product)
+}
+
+func (p ProductService) DeleteProduct(productID string) error {
+	return p.repository.DeleteProduct(productID)
 }
 
 func (p *ProductService) CreateProductCategory(category *models.ProductCategory) error {
