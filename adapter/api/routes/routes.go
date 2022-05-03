@@ -13,6 +13,7 @@ func ProductRoutes(r *gin.Engine, pc *product.ProductController) {
 	})
 	r.POST("/products", middleware.AuthorizeToken(), pc.AddProduct())
 	r.POST("/products/category/add", middleware.AuthorizeToken(), pc.AddProductCategory())
+	r.DELETE("/products/category/remove/:id", middleware.AuthorizeToken(), pc.RemoveProductCategory())
 }
 
 func UserRoutes(r *gin.Engine, uc *user.UserController) {
