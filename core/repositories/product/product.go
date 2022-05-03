@@ -19,3 +19,10 @@ func (repo *ProductRepository) CreateProduct(product *models.Product) error {
 	}
 	return nil
 }
+
+func (repo *ProductRepository) CreateProductCategory(category *models.ProductCategory) error {
+	if tx := repo.DB.Create(category); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}

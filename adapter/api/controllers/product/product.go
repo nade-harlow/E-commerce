@@ -32,3 +32,17 @@ func (products *ProductController) AddProduct() gin.HandlerFunc {
 		response.Json(c, 200, "Product created successfully", nil, nil)
 	}
 }
+
+func (products *ProductController) AddProductCategory() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		category := models.ProductCategory{}
+		c.ShouldBindJSON(&category)
+		err := products.ProductService.CreateProductCategory(&category)
+		if err != nil {
+			log.Println(err.Error())
+			response.Json(c, 500, "Error creating Product Category", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "Product Category created successfully", nil, nil)
+	}
+}
