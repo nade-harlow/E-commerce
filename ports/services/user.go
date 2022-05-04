@@ -1,8 +1,10 @@
 package services
 
 import (
+	"github.com/nade-harlow/E-commerce/adapter/repository/notification"
 	"github.com/nade-harlow/E-commerce/core/models"
 	"github.com/nade-harlow/E-commerce/core/requests"
+	"github.com/nade-harlow/E-commerce/core/utils"
 	repository2 "github.com/nade-harlow/E-commerce/ports/repositories"
 )
 
@@ -37,6 +39,13 @@ func (user *UserService) GetUserByUsername(username string) (*models.User, error
 }
 
 func (userr *UserService) SignUpUser(user *models.User) error {
+	otp := utils.GenerateOTP()
+	msg := "Please use the otp in verifying your account: " + otp
+
+	err := notification.SendSms(user.Telephone, msg)
+	if err != nil {
+		return err
+	}
 	return userr.repository.SignUpUser(user)
 }
 

@@ -7,16 +7,17 @@ import (
 
 type User struct {
 	Model
-	FirstName string         `json:"first_name"`
-	LastName  string         `json:"last_name"`
-	Username  string         `gorm:"unique" json:"username"`
-	Role      string         `json:"role,omitempty"`
-	Email     string         `gorm:"unique" json:"email"`
-	Password  string         `json:"password,omitempty"`
-	Telephone string         `json:"telephone"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-" `
+	FirstName  string         `json:"first_name"`
+	LastName   string         `json:"last_name"`
+	Username   string         `gorm:"unique" json:"username"`
+	Role       string         `json:"role,omitempty"`
+	Email      string         `gorm:"unique" json:"email"`
+	Password   string         `json:"password,omitempty"`
+	Telephone  string         `json:"telephone"`
+	IsVerified bool           `json:"is_verified"`
+	CreatedAt  time.Time      `json:"created_at"`
+	UpdatedAt  time.Time      `json:"updated_at"`
+	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-" `
 }
 
 type UserAddress struct {
