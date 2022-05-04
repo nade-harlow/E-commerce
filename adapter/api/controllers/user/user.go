@@ -39,7 +39,7 @@ func (user *UserController) SignUpUser() gin.HandlerFunc {
 	}
 }
 
-func (user UserController) SignInUser() gin.HandlerFunc {
+func (user *UserController) SignInUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var userRequest requests.UserLoginRequest
 		if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -70,7 +70,7 @@ func (user UserController) SignInUser() gin.HandlerFunc {
 	}
 }
 
-func (user UserController) VerifyUser() gin.HandlerFunc {
+func (user *UserController) VerifyUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		code := c.PostForm("code")
 		err := user.UserService.VerifyUser(code)
