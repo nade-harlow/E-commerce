@@ -35,18 +35,7 @@ func (user *UserController) SignUpUser() gin.HandlerFunc {
 			response.Json(c, 500, "Error creating user", nil, err.Error())
 			return
 		}
-		token, err := utils.GenerateToken(&userRequest)
-		if err != nil {
-			response.Json(c, 500, "Error generating token", nil, err.Error())
-			return
-		}
-		data := map[string]interface{}{
-			"token":           token,
-			"user_id":         userRequest.ID,
-			"role":            userRequest.Role,
-			"user_first_name": userRequest.FirstName,
-		}
-		response.Json(c, 200, "User created", data, nil)
+		response.Json(c, 200, "User created", nil, nil)
 	}
 }
 
