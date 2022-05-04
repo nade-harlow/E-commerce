@@ -6,6 +6,7 @@ import (
 	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils"
 	"gorm.io/gorm"
+	"log"
 	"strings"
 )
 
@@ -94,4 +95,22 @@ func (repo *UserRepository) SignInUser(user *requests.UserLoginRequest) (*models
 		return nil, errors.New("incorrect email or password")
 	}
 	return userByEmail, nil
+}
+
+func (repo UserRepository) VerifyUser(userID string) error {
+	user, err := repo.GetUserByID(userID)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("user with this id does not exist")
+	}
+	if user.IsVerified {
+		return errors.New("user is already verified")
+	}
+	if tx := repo.DB.Model(&models.User{}).Where("id = ?", userID).Update("is_verified", true); tx.Error != nil {
+		return tx.Error
+	}
+	log.Println("user verified")
+	return nil
 }
