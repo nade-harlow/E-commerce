@@ -67,11 +67,10 @@ func (user UserService) VerifyUser(code string) error {
 		return fmt.Errorf("invalid OTP")
 	}
 	log.Println(value.(string))
-
+	go redisql.RemoveRedisKey(code)
 	err := user.repository.VerifyUser(value.(string))
 	if err != nil {
 		return err
 	}
-	redisql.RemoveRedisKey(code)
 	return nil
 }
