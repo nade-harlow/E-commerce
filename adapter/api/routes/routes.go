@@ -14,6 +14,7 @@ func ProductRoutes(r *gin.Engine, pc *product.ProductController) {
 	r.GET("/products", pc.GetAllProduct())
 	r.POST("/products/add", middleware.AuthorizeToken(), pc.AddProduct())
 	r.POST("/products/category/add", middleware.AuthorizeToken(), pc.AddProductCategory())
+	r.PUT("/products/update/:id", middleware.AuthorizeToken(), pc.UpdateProduct())
 	r.DELETE("/products/category/remove/:id", middleware.AuthorizeToken(), pc.RemoveProductCategory())
 	r.DELETE("/products/delete/:id", middleware.AuthorizeToken(), pc.DeleteProduct())
 }
