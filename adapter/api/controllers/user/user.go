@@ -80,3 +80,15 @@ func (user UserController) SignInUser() gin.HandlerFunc {
 		response.Json(c, 200, "User signed in", data, nil)
 	}
 }
+
+func (user UserController) VerifyUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		code := c.PostForm("code")
+		err := user.UserService.VerifyUser(code)
+		if err != nil {
+			response.Json(c, 500, "Error verifying user", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "User verified", nil, nil)
+	}
+}
