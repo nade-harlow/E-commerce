@@ -11,4 +11,5 @@ type UserRepository interface {
 	GetUserByUsername(username string) (*models.User, error)
 	SignUpUser(user *models.User) error
 	SignInUser(user *requests.UserLoginRequest) (*models.User, error)
+	VerifyUser(userID string) error
 }
