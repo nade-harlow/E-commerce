@@ -18,6 +18,7 @@ const FileSize = 5 * 1024 * 1024
 type ProductServices interface {
 	CreateProduct(product *models.Product) error
 	GetAllProducts() ([]models.Product, error)
+	UpdateProduct(productID string, product map[string]interface{}) error
 	DeleteProduct(productID string) error
 	CreateProductCategory(category *models.ProductCategory) error
 	DeleteProductCategory(categoryID string) error
@@ -41,6 +42,10 @@ func (p *ProductService) CreateProduct(product *models.Product) error {
 
 func (p ProductService) GetAllProducts() ([]models.Product, error) {
 	return p.repository.GetAllProducts()
+}
+
+func (p ProductService) UpdateProduct(productID string, product map[string]interface{}) error {
+	return p.repository.UpdateProduct(productID, product)
 }
 
 func (p ProductService) DeleteProduct(productID string) error {

@@ -28,6 +28,14 @@ func (repo ProductRepository) GetAllProducts() ([]models.Product, error) {
 	return products, nil
 }
 
+func (repo *ProductRepository) UpdateProduct(productID string, product map[string]interface{}) error {
+	repo.DB.Model(&models.ProductImage{}).Where("product_id = ?", productID).Delete(&models.ProductImage{})
+	if tx := repo.DB.Model(&models.Product{}).Where("id = ?", productID).Updates(product); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
 func (repo *ProductRepository) DeleteProduct(productID string) error {
 	if tx := repo.DB.Where("id = ?", productID).Delete(&models.Product{}); tx.Error != nil {
 		return tx.Error

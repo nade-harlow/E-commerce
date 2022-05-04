@@ -69,6 +69,45 @@ func (products ProductController) GetAllProduct() gin.HandlerFunc {
 	}
 }
 
+func (products *ProductController) UpdateProduct() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		productID := c.Param("id")
+		price, _ := strconv.Atoi(c.PostForm("price"))
+		qty, _ := strconv.Atoi(c.PostForm("quantity"))
+
+		form, err := c.MultipartForm()
+		if err != nil {
+			log.Printf("error parsing multipart form: %v", err)
+			response.Json(c, 500, "error parsing multipart form", nil, err.Error())
+			return
+		}
+		productImages := form.File["image"]
+		images, err := products.ProductService.UploadFileToS3(productImages)
+		if err != nil {
+			response.Json(c, 500, "error Uploading file to S3", nil, err.Error())
+			return
+		}
+		product := map[string]interface{}{
+			"ID":                productID,
+			"Name":              c.PostForm("name"),
+			"Description":       c.PostForm("description"),
+			"Sku":               c.PostForm("sku"),
+			"ProductImage":      images,
+			"ProductCategoryID": c.PostForm("category_id"),
+			"Price":             float32(price),
+			"Quantity":          int16(qty),
+		}
+		err = products.ProductService.UpdateProduct(productID, product)
+		//err = products.ProductService.UpdateProduct(&product)
+		if err != nil {
+			log.Println(err.Error())
+			response.Json(c, 500, "Error updating Product", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "Product updated successfully", nil, nil)
+	}
+}
+
 func (products *ProductController) DeleteProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
