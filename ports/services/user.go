@@ -1,11 +1,15 @@
 package services
 
 import (
+	"fmt"
+	"github.com/nade-harlow/E-commerce/adapter/repository/database/redisql"
 	"github.com/nade-harlow/E-commerce/adapter/repository/notification"
 	"github.com/nade-harlow/E-commerce/core/models"
 	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils"
 	repository2 "github.com/nade-harlow/E-commerce/ports/repositories"
+	"log"
+	"time"
 )
 
 type UserServices interface {
@@ -14,11 +18,14 @@ type UserServices interface {
 	GetUserByUsername(username string) (*models.User, error)
 	SignUpUser(user *models.User) error
 	SignInUser(user *requests.UserLoginRequest) (*models.User, error)
+	VerifyUser(code string) error
 }
 
 type UserService struct {
 	repository repository2.UserRepository
 }
+
+const SmsOtpMessage = "Please use the OTP Code: %s to complete your registration. Code expires in five minutes"
 
 func NewUserService(repository repository2.UserRepository) UserServices {
 	return &UserService{
@@ -40,15 +47,31 @@ func (user *UserService) GetUserByUsername(username string) (*models.User, error
 
 func (userr *UserService) SignUpUser(user *models.User) error {
 	otp := utils.GenerateOTP()
-	msg := "Please use the otp in verifying your account: " + otp
-
-	err := notification.SendSms(user.Telephone, msg)
+	msg := fmt.Sprintf(SmsOtpMessage, otp)
+	err := userr.repository.SignUpUser(user)
 	if err != nil {
 		return err
 	}
-	return userr.repository.SignUpUser(user)
+	log.Println("otp: ", otp)
+	redisql.SetRedisKey(otp, user.ID, time.Minute*5)
+	return notification.SendSms(user.Telephone, msg)
 }
 
 func (userr UserService) SignInUser(user *requests.UserLoginRequest) (*models.User, error) {
 	return userr.repository.SignInUser(user)
+}
+
+func (user UserService) VerifyUser(code string) error {
+	valid, value := redisql.ValidateRedisKey(code)
+	if !valid {
+		return fmt.Errorf("invalid OTP")
+	}
+	log.Println(value.(string))
+
+	err := user.repository.VerifyUser(value.(string))
+	if err != nil {
+		return err
+	}
+	redisql.RemoveRedisKey(code)
+	return nil
 }
