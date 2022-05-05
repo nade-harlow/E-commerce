@@ -123,3 +123,20 @@ func (user UserController) UpdateUserAddress() gin.HandlerFunc {
 		response.Json(c, 200, "User address updated", nil, nil)
 	}
 }
+
+// reset password
+func (user UserController) ResetPassword() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		password := c.PostForm("password")
+		confirm := c.PostForm("confirm")
+		userID := c.Param("id")
+		if password != confirm {
+			response.Json(c, 400, "Passwords do not match", nil, "Passwords do not match")
+		}
+		if err := user.UserService.ResetUserPassword(userID, password); err != nil {
+			response.Json(c, 500, "Error resetting password", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "Password reset", nil, nil)
+	}
+}
