@@ -7,6 +7,7 @@ import (
 	user2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/user"
 	"github.com/nade-harlow/E-commerce/adapter/api/routes"
 	"github.com/nade-harlow/E-commerce/adapter/repository/database/client"
+	"github.com/nade-harlow/E-commerce/adapter/repository/notification"
 	"github.com/nade-harlow/E-commerce/core/repositories/product"
 	"github.com/nade-harlow/E-commerce/core/repositories/user"
 	"github.com/nade-harlow/E-commerce/ports/services"
@@ -20,6 +21,8 @@ import (
 func Start() {
 	router := gin.Default()
 	db := client.InitializeConnection()
+	mg := notification.MailgunRepository{}
+	mg.NewMailgunRepository()
 	products := product2.NewProductController(services.NewProductService(product.New(db)))
 	users := user2.NewUserController(services.NewUserService(user.New(db)))
 	routes.ProductRoutes(router, products)

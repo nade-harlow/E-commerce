@@ -124,7 +124,18 @@ func (user UserController) UpdateUserAddress() gin.HandlerFunc {
 	}
 }
 
-// reset password
+func (user UserController) ForgotPassword() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		email := c.PostForm("email")
+		ID := c.Param("id")
+		if err := user.UserService.ForgotPassword(ID, email); err != nil {
+			response.Json(c, 500, "Error forgot password", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "Password reset email sent", nil, nil)
+	}
+}
+
 func (user UserController) ResetPassword() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		password := c.PostForm("password")
