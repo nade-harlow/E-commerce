@@ -7,6 +7,7 @@ import (
 	"github.com/nade-harlow/E-commerce/core/utils"
 	"github.com/nade-harlow/E-commerce/core/utils/response"
 	"github.com/nade-harlow/E-commerce/ports/services"
+	"log"
 )
 
 type UserController struct {
@@ -136,11 +137,19 @@ func (user UserController) ForgotPassword() gin.HandlerFunc {
 	}
 }
 
+func (user UserController) RecoverPassword() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ID := c.Param("id")
+		c.HTML(200, "change_password.html", ID)
+	}
+}
+
 func (user UserController) ResetPassword() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		password := c.PostForm("password")
 		confirm := c.PostForm("confirm")
 		userID := c.Param("id")
+		log.Println(userID)
 		if password != confirm {
 			response.Json(c, 400, "Passwords do not match", nil, "Passwords do not match")
 		}
