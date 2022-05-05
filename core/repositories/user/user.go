@@ -128,3 +128,21 @@ func (repo *UserRepository) UpdateUserAddress(address *models.UserAddress) error
 	}
 	return nil
 }
+
+func (repo UserRepository) ResetUserPassword(userID string, password string) error {
+	user, err := repo.GetUserByID(userID)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("user with this id does not exist")
+	}
+	user.Password, err = utils.HashPassword(password)
+	if err != nil {
+		return errors.New("error hashing password")
+	}
+	if tx := repo.DB.Model(&models.User{}).Where("id = ?", userID).Update("password", user.Password); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
