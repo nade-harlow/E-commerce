@@ -12,5 +12,6 @@ type UserRepository interface {
 	SignUpUser(user *models.User) error
 	SignInUser(user *requests.UserLoginRequest) (*models.User, error)
 	VerifyUser(userID string) error
+	AddUserAddress(address *models.UserAddress) error
 	UpdateUserAddress(user *models.UserAddress) error
 }
