@@ -21,6 +21,7 @@ type UserServices interface {
 	VerifyUser(code string) error
 	AddUserAddress(address *models.UserAddress) error
 	UpdateUserAddress(user *models.UserAddress) error
+	ResetUserPassword(userID string, password string) error
 }
 
 type UserService struct {
@@ -77,10 +78,14 @@ func (user *UserService) VerifyUser(code string) error {
 	return nil
 }
 
-func (user UserService) AddUserAddress(address *models.UserAddress) error {
+func (user *UserService) AddUserAddress(address *models.UserAddress) error {
 	return user.repository.AddUserAddress(address)
 }
 
-func (user UserService) UpdateUserAddress(address *models.UserAddress) error {
+func (user *UserService) UpdateUserAddress(address *models.UserAddress) error {
 	return user.repository.UpdateUserAddress(address)
+}
+
+func (user *UserService) ResetUserPassword(userID string, password string) error {
+	return user.repository.ResetUserPassword(userID, password)
 }
