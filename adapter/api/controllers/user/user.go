@@ -81,3 +81,24 @@ func (user *UserController) VerifyUser() gin.HandlerFunc {
 		response.Json(c, 200, "User verified", nil, nil)
 	}
 }
+
+func (user UserController) UpdateUserInfo() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var userRequest models.UserAddress
+		userID := c.Param("id")
+		userRequest.UserID = userID
+		if err := c.ShouldBindJSON(&userRequest); err != nil {
+			response.Json(c, 500, "Error binding json", nil, err.Error())
+			return
+		}
+		if err := utils.ValidateStruct(userRequest); err != nil {
+			response.Json(c, 400, "Error validating data", nil, err.Error())
+			return
+		}
+		if err := user.UserService.UpdateUserAddress(&userRequest); err != nil {
+			response.Json(c, 500, "Error updating user", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "User updated", nil, nil)
+	}
+}
