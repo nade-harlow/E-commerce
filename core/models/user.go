@@ -23,7 +23,7 @@ type User struct {
 type UserAddress struct {
 	Model
 	UserID       string         `json:"user_id"`
-	User         User           `json:"user"`
+	User         User           `json:"-"`
 	AddressLine1 string         `json:"address_line_1"`
 	AddressLine2 string         `json:"address_line_2"`
 	City         string         `json:"city"`
