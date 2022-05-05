@@ -82,7 +82,28 @@ func (user *UserController) VerifyUser() gin.HandlerFunc {
 	}
 }
 
-func (user UserController) UpdateUserInfo() gin.HandlerFunc {
+func (user UserController) AddUserAddress() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var userRequest models.UserAddress
+		userID := c.Param("id")
+		userRequest.UserID = userID
+		if err := c.ShouldBindJSON(&userRequest); err != nil {
+			response.Json(c, 500, "Error binding json", nil, err.Error())
+			return
+		}
+		if err := utils.ValidateStruct(userRequest); err != nil {
+			response.Json(c, 400, "Error validating data", nil, err.Error())
+			return
+		}
+		if err := user.UserService.AddUserAddress(&userRequest); err != nil {
+			response.Json(c, 500, "Error adding user address", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "User address added", nil, nil)
+	}
+}
+
+func (user UserController) UpdateUserAddress() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var userRequest models.UserAddress
 		userID := c.Param("id")
@@ -96,9 +117,9 @@ func (user UserController) UpdateUserInfo() gin.HandlerFunc {
 			return
 		}
 		if err := user.UserService.UpdateUserAddress(&userRequest); err != nil {
-			response.Json(c, 500, "Error updating user", nil, err.Error())
+			response.Json(c, 500, "Error updating user address", nil, err.Error())
 			return
 		}
-		response.Json(c, 200, "User updated", nil, nil)
+		response.Json(c, 200, "User address updated", nil, nil)
 	}
 }
