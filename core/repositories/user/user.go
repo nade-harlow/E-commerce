@@ -114,3 +114,10 @@ func (repo UserRepository) VerifyUser(userID string) error {
 	log.Println("user verified")
 	return nil
 }
+
+func (repo *UserRepository) UpdateUserAddress(user *models.UserAddress) error {
+	if tx := repo.DB.Model(&models.UserAddress{}).Where("user_id = ?", user.UserID).Updates(user).Debug(); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
