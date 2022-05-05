@@ -23,4 +23,5 @@ func UserRoutes(r *gin.Engine, uc *user.UserController) {
 	r.POST("/signup", uc.SignUpUser())
 	r.POST("/login", uc.SignInUser())
 	r.POST("/verify/otp", uc.VerifyUser())
+	r.PUT("/update/address/:id", middleware.AuthorizeToken(), uc.UpdateUserInfo())
 }
