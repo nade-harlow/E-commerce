@@ -6,20 +6,11 @@ import (
 
 type CartItem struct {
 	Model
-	ShoppingSessionID string          `json:"shopping_session_id"`
-	ShoppingSession   ShoppingSession `json:"shopping_session"`
-	ProductID         string          `json:"product_id"`
-	Product           Product         `json:"products"`
-	Quantity          int16           `json:"quantity"`
-	CreatedAt         time.Time       `json:"created_at"`
-	UpdatedAt         time.Time       `json:"updated_at"`
-}
-
-type ShoppingSession struct {
-	Model
 	UserID    string    `json:"user_id"`
-	User      User      `json:"user"`
-	Total     float32   `json:"total"`
+	User      User      `json:"-"`
+	ProductID string    `json:"product_id"`
+	Product   Product   `json:"-"`
+	Quantity  int16     `json:"quantity"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
