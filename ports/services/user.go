@@ -57,11 +57,11 @@ func (userr *UserService) SignUpUser(user *models.User) error {
 	return notification.SendSms(user.Telephone, msg)
 }
 
-func (userr UserService) SignInUser(user *requests.UserLoginRequest) (*models.User, error) {
+func (userr *UserService) SignInUser(user *requests.UserLoginRequest) (*models.User, error) {
 	return userr.repository.SignInUser(user)
 }
 
-func (user UserService) VerifyUser(code string) error {
+func (user *UserService) VerifyUser(code string) error {
 	valid, value := redisql.ValidateRedisKey(code)
 	if !valid {
 		return fmt.Errorf("invalid OTP")
