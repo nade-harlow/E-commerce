@@ -20,6 +20,8 @@ import (
 
 func Start() {
 	router := gin.Default()
+	router.LoadHTMLFiles("core/template/change_password.html")
+
 	db := client.InitializeConnection()
 	mg := notification.MailgunRepository{}
 	mg.NewMailgunRepository()
