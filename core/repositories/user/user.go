@@ -146,3 +146,27 @@ func (repo UserRepository) ResetUserPassword(userID string, password string) err
 	}
 	return nil
 }
+func (repo *UserRepository) AddRecoveryPassword(userID, email string) error {
+	if tx := repo.DB.Create(&models.PasswordRecovery{
+		UserID:    userID,
+		UserEmail: email,
+	}); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
+func (repo *UserRepository) RemoveRecoveryPassword(userID string) error {
+	userRP := &models.PasswordRecovery{}
+	err := repo.DB.Where("user_id = ?", userID).First(userRP).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			log.Println("no recovery password found")
+			return errors.New("error updating password")
+		}
+	}
+	if tx := repo.DB.Where("user_id = ?", userID).Delete(&models.PasswordRecovery{}); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
