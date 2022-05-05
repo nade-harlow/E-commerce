@@ -19,6 +19,7 @@ type UserServices interface {
 	SignUpUser(user *models.User) error
 	SignInUser(user *requests.UserLoginRequest) (*models.User, error)
 	VerifyUser(code string) error
+	UpdateUserAddress(user *models.UserAddress) error
 }
 
 type UserService struct {
@@ -73,4 +74,8 @@ func (user *UserService) VerifyUser(code string) error {
 		return err
 	}
 	return nil
+}
+
+func (userr UserService) UpdateUserAddress(user *models.UserAddress) error {
+	return userr.repository.UpdateUserAddress(user)
 }
