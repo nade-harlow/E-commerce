@@ -14,4 +14,5 @@ type UserRepository interface {
 	VerifyUser(userID string) error
 	AddUserAddress(address *models.UserAddress) error
 	UpdateUserAddress(user *models.UserAddress) error
+	ResetUserPassword(userID string, password string) error
 }
