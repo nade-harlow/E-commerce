@@ -92,7 +92,11 @@ func (user *UserService) UpdateUserAddress(address *models.UserAddress) error {
 }
 
 func (user *UserService) ResetUserPassword(userID string, password string) error {
-	return user.repository.ResetUserPassword(userID, password)
+	err := user.repository.ResetUserPassword(userID, password)
+	if err != nil {
+		return err
+	}
+	return user.repository.RemoveRecoveryPassword(userID)
 }
 
 func (user UserService) ForgotPassword(userID, email string) error {
@@ -102,5 +106,9 @@ func (user UserService) ForgotPassword(userID, email string) error {
 		ID:      userID,
 	}
 	body := utils.ParseTemplate(data)
-	return user.notification.SendMail(email, subject, body)
+	err := user.notification.SendMail(email, subject, body)
+	if err != nil {
+		return err
+	}
+	return user.repository.AddRecoveryPassword(userID, email)
 }
