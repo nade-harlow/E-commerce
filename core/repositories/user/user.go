@@ -115,8 +115,15 @@ func (repo UserRepository) VerifyUser(userID string) error {
 	return nil
 }
 
-func (repo *UserRepository) UpdateUserAddress(user *models.UserAddress) error {
-	if tx := repo.DB.Model(&models.UserAddress{}).Where("user_id = ?", user.UserID).Updates(user).Debug(); tx.Error != nil {
+func (repo UserRepository) AddUserAddress(address *models.UserAddress) error {
+	if tx := repo.DB.Create(address); tx.Error != nil {
+		return tx.Error
+	}
+	return nil
+}
+
+func (repo *UserRepository) UpdateUserAddress(address *models.UserAddress) error {
+	if tx := repo.DB.Model(&models.UserAddress{}).Where("user_id = ?", address.UserID).Updates(address).Debug(); tx.Error != nil {
 		return tx.Error
 	}
 	return nil
