@@ -19,12 +19,23 @@ func NewCartController(productService services.CartServices) *CartController {
 
 func (cart CartController) GetItem() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		itemID := c.Param("id")
-		item, err := cart.CartService.GetCart(itemID)
+		item, err := cart.CartService.GetCart()
 		if err != nil {
 			response.Json(c, 500, "error fetching cart", nil, err.Error())
 			return
 		}
 		response.Json(c, 200, "cart fetched", item, nil)
+	}
+}
+
+func (cart CartController) AddItem() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		productID := c.Param("productID")
+		err := cart.CartService.AddItem(productID)
+		if err != nil {
+			response.Json(c, 500, "error adding cart", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "cart added", nil, nil)
 	}
 }
