@@ -29,7 +29,7 @@ func (user *UserController) SignUpUser() gin.HandlerFunc {
 			return
 		}
 		if err := utils.ValidateStruct(userRequest); err != nil {
-			response.Json(c, 400, "Error validating data", nil, err.Error())
+			response.Json(c, 400, "Error validating data", nil, err)
 			return
 		}
 		if err := user.UserService.SignUpUser(&userRequest); err != nil {
@@ -48,7 +48,7 @@ func (user *UserController) SignInUser() gin.HandlerFunc {
 			return
 		}
 		if err := utils.ValidateStruct(userRequest); err != nil {
-			response.Json(c, 400, "Error validating data", nil, err.Error())
+			response.Json(c, 400, "Error validating data", nil, err)
 			return
 		}
 		userdata, err := user.UserService.SignInUser(&userRequest)
@@ -93,7 +93,7 @@ func (user UserController) AddUserAddress() gin.HandlerFunc {
 			return
 		}
 		if err := utils.ValidateStruct(userRequest); err != nil {
-			response.Json(c, 400, "Error validating data", nil, err.Error())
+			response.Json(c, 400, "Error validating data", nil, err)
 			return
 		}
 		if err := user.UserService.AddUserAddress(&userRequest); err != nil {
@@ -114,7 +114,7 @@ func (user UserController) UpdateUserAddress() gin.HandlerFunc {
 			return
 		}
 		if err := utils.ValidateStruct(userRequest); err != nil {
-			response.Json(c, 400, "Error validating data", nil, err.Error())
+			response.Json(c, 400, "Error validating data", nil, err)
 			return
 		}
 		if err := user.UserService.UpdateUserAddress(&userRequest); err != nil {
