@@ -2,59 +2,51 @@ package utils
 
 import (
 	"fmt"
+	"github.com/go-playground/locales/en"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
+	enTranslations "github.com/go-playground/validator/v10/translations/en"
+	"log"
 )
 
 var validate *validator.Validate
+var Translate ut.Translator
 
-func ValidateStruct(data interface{}) error {
-
+func init() {
 	validate = validator.New()
-	// returns nil or ValidationErrors ( []FieldError )
-	err := validate.Struct(data)
+	english := en.New()
+	uni := ut.New(english, english)
+	Translate, _ = uni.GetTranslator("en")
+	err := enTranslations.RegisterDefaultTranslations(validate, Translate)
 	if err != nil {
-
-		// this check is only needed when your code could produce
-		// an invalid value for validation such as interface with nil
-		// value most including myself do not usually have code like this.
-		if _, ok := err.(*validator.InvalidValidationError); ok {
-			fmt.Println(err)
-			return err
-		}
-
-		for _, err := range err.(validator.ValidationErrors) {
-
-			fmt.Println(err.Namespace())
-			fmt.Println(err.Field())
-			fmt.Println(err.StructNamespace())
-			fmt.Println(err.StructField())
-			fmt.Println(err.Tag())
-			fmt.Println(err.ActualTag())
-			fmt.Println(err.Kind())
-			fmt.Println(err.Type())
-			fmt.Println(err.Value())
-			fmt.Println(err.Param())
-			fmt.Println()
-		}
-
-		// from here you can create your own error messages in whatever language you wish
-		return err
+		log.Println(err)
 	}
+}
 
-	// save user to database
-	return nil
+func ValidateStruct(data interface{}) []string {
+	err := validate.Struct(data)
+	log.Println("struct validation error: ", TranslateError(err, Translate))
+	return TranslateError(err, Translate)
 }
 
 func validateVariable() {
-
 	myEmail := "joeybloggs.gmail.com"
-
-	errs := validate.Var(myEmail, "required,email")
-
-	if errs != nil {
-		fmt.Println(errs) // output: Key: "" Error:Field validation for "" failed on the "email" tag
+	err := validate.Var(myEmail, "required,email")
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
-	// email ok, move on
+}
+
+func TranslateError(err error, trans ut.Translator) (errs []string) {
+	if err == nil {
+		return nil
+	}
+	validatorErrs := err.(validator.ValidationErrors)
+	for _, e := range validatorErrs {
+		translatedErr := fmt.Errorf(e.Translate(trans))
+		errs = append(errs, translatedErr.Error())
+	}
+	return errs
 }
