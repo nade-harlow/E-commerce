@@ -11,6 +11,7 @@ func ProductRoutes(r *gin.Engine, pc *product.ProductController) {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, map[string]string{"message": "Hello World!"})
 	})
+	r.GET("/products/:id", pc.GetProduct())
 	r.GET("/products", pc.GetAllProduct())
 	r.POST("/products/add", middleware.AuthorizeToken(), pc.AddProduct())
 	r.POST("/products/category/add", middleware.AuthorizeToken(), pc.AddProductCategory())
