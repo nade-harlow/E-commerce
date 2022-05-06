@@ -22,7 +22,7 @@ func (repo *ProductRepository) CreateProduct(product *models.Product) error {
 
 func (repo ProductRepository) GetAllProducts() ([]models.Product, error) {
 	var products []models.Product
-	if tx := repo.DB.Find(&products); tx.Error != nil {
+	if tx := repo.DB.Preload("ProductImage").Find(&products); tx.Error != nil {
 		return nil, tx.Error
 	}
 	return products, nil
