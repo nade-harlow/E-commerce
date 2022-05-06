@@ -57,6 +57,18 @@ func (products *ProductController) AddProduct() gin.HandlerFunc {
 	}
 }
 
+func (products ProductController) GetProduct() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		productID := c.Param("id")
+		product, err := products.ProductService.GetProduct(productID)
+		if err != nil {
+			log.Println(err.Error())
+			response.Json(c, 500, "Error getting Product", nil, err.Error())
+		}
+		response.Json(c, 200, "Product retrieved successfully", product, nil)
+	}
+}
+
 func (products ProductController) GetAllProduct() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		product, err := products.ProductService.GetAllProducts()
