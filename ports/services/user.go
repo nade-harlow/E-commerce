@@ -66,7 +66,12 @@ func (userr *UserService) SignUpUser(user *models.User) error {
 }
 
 func (userr *UserService) SignInUser(user *requests.UserLoginRequest) (*models.User, error) {
-	return userr.repository.SignInUser(user)
+	userData, err := userr.repository.SignInUser(user)
+	if err != nil {
+		return nil, err
+	}
+	redisql.SetRedisKey("userID", userData.ID, time.Hour*24)
+	return userData, nil
 }
 
 func (user *UserService) VerifyUser(code string) error {
