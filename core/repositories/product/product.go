@@ -20,6 +20,14 @@ func (repo *ProductRepository) CreateProduct(product *models.Product) error {
 	return nil
 }
 
+func (repo *ProductRepository) GetProduct(productID string) (*models.Product, error) {
+	var product models.Product
+	if tx := repo.DB.Where("id = ?", productID).Preload("ProductImage").First(&product); tx.Error != nil {
+		return nil, tx.Error
+	}
+	return &product, nil
+}
+
 func (repo ProductRepository) GetAllProducts() ([]models.Product, error) {
 	var products []models.Product
 	if tx := repo.DB.Preload("ProductImage").Find(&products); tx.Error != nil {
