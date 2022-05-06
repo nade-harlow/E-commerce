@@ -10,7 +10,7 @@ type Product struct {
 	Name              string          ` json:"name"`
 	Description       string          ` json:"description"`
 	Sku               string          ` json:"sku"`
-	ProductImage      []ProductImage  ` json:"product_image"`
+	ProductImage      []ProductImage  ` json:"product_image,omitempty"`
 	ProductCategoryID string          ` json:"category_id"`
 	ProductCategory   ProductCategory ` json:"-"`
 	Price             float32         `json:"price"`
