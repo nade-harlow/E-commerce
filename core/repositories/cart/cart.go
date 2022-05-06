@@ -1,6 +1,7 @@
 package cart
 
 import (
+	"errors"
 	"github.com/nade-harlow/E-commerce/core/models"
 	"gorm.io/gorm"
 )
@@ -20,7 +21,17 @@ func (repo *CartRepository) GetCart(userID string) ([]models.CartItem, error) {
 }
 
 func (repo CartRepository) AddItem(item models.CartItem) error {
-	return repo.DB.Create(&item).Error
+	var cartItem models.CartItem
+	err := repo.DB.Where("user_id = ? AND product_id = ?", item.UserID, item.ProductID).First(&cartItem).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			err = repo.DB.Create(&item).Error
+			return err
+		}
+	} else {
+		return errors.New("item already exists in cart")
+	}
+	return nil
 }
 
 func (repo CartRepository) RemoveItem(userID, ItemID string) error {
