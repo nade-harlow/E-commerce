@@ -33,5 +33,8 @@ func UserRoutes(r *gin.Engine, uc *user.UserController) {
 }
 
 func CartRoutes(r *gin.Engine, cc *cart.CartController) {
-
+	r.POST("/add/cart/:productID", middleware.AuthorizeToken(), cc.AddCart())
+	r.GET("/cart", middleware.AuthorizeToken(), cc.GetCart())
+	r.PUT("/update/cart/:id/:quantity", middleware.AuthorizeToken(), cc.UpdateCart())
+	r.DELETE("/delete/cart/:id", middleware.AuthorizeToken(), cc.DeleteCart())
 }
