@@ -53,7 +53,7 @@ func (cart *CartController) DeleteCart() gin.HandlerFunc {
 	}
 }
 
-func (cart CartController) UpdateCart() gin.HandlerFunc {
+func (cart *CartController) UpdateCart() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		itemID := c.Param("id")
 		qty := c.Param("quantity")
