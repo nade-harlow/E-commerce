@@ -1,8 +1,10 @@
 package repositories
 
+import "github.com/nade-harlow/E-commerce/core/models"
+
 type CartRepository interface {
-	//GetCart(userId string) ([]CartItem, error)
-	//AddItem(userId string, item CartItem) error
-	//RemoveItem(userId string, itemId string) error
-	//UpdateItem(userId string, itemId string, quantity int) error
+	GetCart(userID string) ([]models.CartItem, error)
+	AddItem(item models.CartItem) error
+	RemoveItem(userID, ItemID string) error
+	UpdateItem(userId string, itemId string, quantity int16) error
 }
