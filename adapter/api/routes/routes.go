@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/nade-harlow/E-commerce/adapter/api/controllers/cart"
 	"github.com/nade-harlow/E-commerce/adapter/api/controllers/product"
 	"github.com/nade-harlow/E-commerce/adapter/api/controllers/user"
 	"github.com/nade-harlow/E-commerce/adapter/api/middleware"
@@ -29,4 +30,8 @@ func UserRoutes(r *gin.Engine, uc *user.UserController) {
 	r.GET("reset/password/:id", uc.RecoverPassword())
 	r.POST("/reset/password/:id", uc.ResetPassword())
 	r.PUT("/update/address/:id", middleware.AuthorizeToken(), uc.UpdateUserAddress())
+}
+
+func CartRoutes(r *gin.Engine, cc *cart.CartController) {
+
 }
