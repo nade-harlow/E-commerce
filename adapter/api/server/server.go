@@ -3,11 +3,13 @@ package server
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	cart2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/cart"
 	product2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/product"
 	user2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/user"
 	"github.com/nade-harlow/E-commerce/adapter/api/routes"
 	"github.com/nade-harlow/E-commerce/adapter/repository/database/client"
 	"github.com/nade-harlow/E-commerce/adapter/repository/notification"
+	"github.com/nade-harlow/E-commerce/core/repositories/cart"
 	"github.com/nade-harlow/E-commerce/core/repositories/product"
 	"github.com/nade-harlow/E-commerce/core/repositories/user"
 	"github.com/nade-harlow/E-commerce/ports/services"
@@ -25,8 +27,12 @@ func Start() {
 	db := client.InitializeConnection()
 	mg := notification.MailgunRepository{}
 	mg.NewMailgunRepository()
+
 	products := product2.NewProductController(services.NewProductService(product.New(db)))
 	users := user2.NewUserController(services.NewUserService(user.New(db)))
+	cart := cart2.NewCartController(services.NewCartService(cart.New(db)))
+
+	routes.CartRoutes(router, cart)
 	routes.ProductRoutes(router, products)
 	routes.UserRoutes(router, users)
 	port := ":" + os.Getenv("PORT")
