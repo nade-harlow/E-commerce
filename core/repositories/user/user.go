@@ -91,6 +91,9 @@ func (repo *UserRepository) SignInUser(user *requests.UserLoginRequest) (*models
 	if userByEmail == nil {
 		return nil, errors.New("user with this email does not exist")
 	}
+	if !userByEmail.IsVerified {
+		return nil, errors.New("user with this email is not verified")
+	}
 	if ok := utils.CheckPasswordHash(user.Password, userByEmail.Password); !ok {
 		return nil, errors.New("incorrect email or password")
 	}
