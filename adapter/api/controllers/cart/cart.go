@@ -58,8 +58,8 @@ func (cart CartController) UpdateCart() gin.HandlerFunc {
 		itemID := c.Param("id")
 		qty := c.Param("quantity")
 		quantity, err := strconv.Atoi(qty)
-		if err != nil {
-			response.Json(c, 500, "error updating item in cart", nil, err.Error())
+		if err != nil || quantity < 1 {
+			response.Json(c, 500, "invalid quantity", nil, err.Error())
 		}
 		err = cart.CartService.UpdateItem(itemID, int16(quantity))
 		if err != nil {
