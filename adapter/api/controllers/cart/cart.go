@@ -2,6 +2,7 @@ package cart
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/nade-harlow/E-commerce/core/utils"
 	"github.com/nade-harlow/E-commerce/core/utils/response"
 	"github.com/nade-harlow/E-commerce/ports/services"
 	"strconv"
@@ -57,13 +58,15 @@ func (cart *CartController) UpdateCart() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		itemID := c.Param("id")
 		qty := c.Param("quantity")
-		quantity, err := strconv.Atoi(qty)
-		if err != nil || quantity < 1 {
-			response.Json(c, 500, "invalid quantity", nil, err.Error())
-		}
-		err = cart.CartService.UpdateItem(itemID, int16(quantity))
+		quantity, _ := strconv.Atoi(qty)
+		err := utils.ValidateVariable(quantity, "gt=0")
 		if err != nil {
-			response.Json(c, 500, "error updating item in cart", nil, err.Error())
+			response.Json(c, 500, "invalid quantity", nil, err)
+			return
+		}
+		er := cart.CartService.UpdateItem(itemID, int16(quantity))
+		if er != nil {
+			response.Json(c, 500, "error updating item in cart", nil, er.Error())
 			return
 		}
 		response.Json(c, 200, "item updated in cart", nil, nil)
