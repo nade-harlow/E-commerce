@@ -17,7 +17,7 @@ func NewCartController(productService services.CartServices) *CartController {
 	}
 }
 
-func (cart CartController) GetItem() gin.HandlerFunc {
+func (cart *CartController) GetItem() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		item, err := cart.CartService.GetCart()
 		if err != nil {
@@ -28,14 +28,26 @@ func (cart CartController) GetItem() gin.HandlerFunc {
 	}
 }
 
-func (cart CartController) AddItem() gin.HandlerFunc {
+func (cart *CartController) AddItem() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		productID := c.Param("productID")
-		err := cart.CartService.AddItem(productID)
+		itemID := c.Param("itemID")
+		err := cart.CartService.AddItem(itemID)
 		if err != nil {
-			response.Json(c, 500, "error adding cart", nil, err.Error())
+			response.Json(c, 500, "error adding item to cart", nil, err.Error())
 			return
 		}
-		response.Json(c, 200, "cart added", nil, nil)
+		response.Json(c, 200, "item added to cart", nil, nil)
+	}
+}
+
+func (cart *CartController) RemoveItem() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		itemID := c.Param("itemID")
+		err := cart.CartService.RemoveItem(itemID)
+		if err != nil {
+			response.Json(c, 500, "error removing item from cart", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "item removed from cart", nil, nil)
 	}
 }
