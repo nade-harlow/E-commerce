@@ -29,14 +29,13 @@ func ValidateStruct(data interface{}) []string {
 	return TranslateError(err, Translate)
 }
 
-func validateVariable() {
-	myEmail := "joeybloggs.gmail.com"
-	err := validate.Var(myEmail, "required,email")
+func ValidateVariable(variable interface{}, tag string) []string {
+	err := validate.Var(variable, tag)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Println(err)
+		return TranslateError(err, Translate)
 	}
-
+	return nil
 }
 
 func TranslateError(err error, trans ut.Translator) (errs []string) {
