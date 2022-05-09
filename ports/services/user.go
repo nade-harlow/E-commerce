@@ -17,10 +17,10 @@ type UserServices interface {
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(id string) (*models.User, error)
 	GetUserByUsername(username string) (*models.User, error)
-	SignUpUser(user *models.User) error
+	SignUpUser(user requests.UserSignUpRequest) error
 	SignInUser(user *requests.UserLoginRequest) (*models.User, error)
 	VerifyUser(code string) error
-	AddUserAddress(address *models.UserAddress) error
+	AddUserAddress(address requests.UserAddressRequest) error
 	UpdateUserAddress(user *models.UserAddress) error
 	ForgotPassword(userID, email string) error
 	ResetUserPassword(userID string, password string) error
@@ -53,7 +53,15 @@ func (user *UserService) GetUserByUsername(username string) (*models.User, error
 	return user.repository.GetUserByUsername(username)
 }
 
-func (userr *UserService) SignUpUser(user *models.User) error {
+func (userr *UserService) SignUpUser(users requests.UserSignUpRequest) error {
+	user := &models.User{
+		FirstName: users.FirstName,
+		LastName:  users.LastName,
+		Role:      users.Role,
+		Email:     users.Email,
+		Password:  users.Password,
+		Telephone: users.Telephone,
+	}
 	otp := utils.GenerateOTP()
 	msg := fmt.Sprintf(SmsOtpMessage, otp)
 	err := userr.repository.SignUpUser(user)
@@ -88,8 +96,17 @@ func (user *UserService) VerifyUser(code string) error {
 	return nil
 }
 
-func (user *UserService) AddUserAddress(address *models.UserAddress) error {
-	return user.repository.AddUserAddress(address)
+func (user *UserService) AddUserAddress(address requests.UserAddressRequest) error {
+	userAddress := &models.UserAddress{
+		UserID:       address.UserID,
+		AddressLine1: address.AddressLine1,
+		AddressLine2: address.AddressLine2,
+		City:         address.City,
+		PostalCode:   address.PostalCode,
+		Country:      address.Country,
+		Mobile:       address.Mobile,
+	}
+	return user.repository.AddUserAddress(userAddress)
 }
 
 func (user *UserService) UpdateUserAddress(address *models.UserAddress) error {
