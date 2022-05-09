@@ -62,3 +62,25 @@ func (repo CartRepository) UpdateItem(userID string, itemID string, quantity int
 	}
 	return nil
 }
+
+func (repo CartRepository) CheckOut(userID string) (map[string]interface{}, error) {
+	var user models.UserAddress
+	cart, err := repo.GetCart(userID)
+	if err != nil {
+		return nil, err
+	}
+	err = repo.DB.Preload("User").Where("user_id = ?", userID).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	var total float32
+	for _, v := range cart {
+		total += v.SubTotal
+	}
+	data := map[string]interface{}{
+		"cart":  cart,
+		"user":  user,
+		"total": total,
+	}
+	return data, nil
+}
