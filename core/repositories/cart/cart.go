@@ -16,7 +16,10 @@ func New(DB *gorm.DB) *CartRepository {
 
 func (repo *CartRepository) GetCart(userID string) ([]models.CartItem, error) {
 	var cartItems []models.CartItem
-	err := repo.DB.Where("user_id = ?", userID).Find(&cartItems).Error
+	err := repo.DB.Preload("Product").Where("user_id = ?", userID).Find(&cartItems).Error
+	for i, item := range cartItems {
+		cartItems[i].SubTotal = item.Product.Price * float32(item.Quantity)
+	}
 	return cartItems, err
 }
 
