@@ -76,3 +76,14 @@ func (cart *CartController) UpdateCart() gin.HandlerFunc {
 		response.Json(c, 200, "item updated in cart", nil, nil)
 	}
 }
+
+func (cart CartController) CheckOut() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		data, err := cart.CartService.CheckOut()
+		if err != nil {
+			response.Json(c, 500, "error checking out", nil, err.Error())
+			return
+		}
+		response.Json(c, 200, "checkout success", gin.H{"data": data}, nil)
+	}
+}
