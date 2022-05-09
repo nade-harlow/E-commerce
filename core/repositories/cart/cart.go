@@ -36,7 +36,7 @@ func (repo CartRepository) AddItem(item models.CartItem) error {
 
 func (repo CartRepository) RemoveItem(userID, itemID string) error {
 	var cartItem models.CartItem
-	err := repo.DB.Where("user_id = ? AND product_id = ?", userID, itemID).First(&cartItem).Error
+	err := repo.DB.Where("user_id = ? AND id = ?", userID, itemID).First(&cartItem).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("item not found in cart")
@@ -49,7 +49,7 @@ func (repo CartRepository) RemoveItem(userID, itemID string) error {
 
 func (repo CartRepository) UpdateItem(userID string, itemID string, quantity int16) error {
 	var cartItem models.CartItem
-	err := repo.DB.Where("user_id = ? AND product_id = ?", userID, itemID).First(&cartItem).Error
+	err := repo.DB.Where("user_id = ? AND id = ?", userID, itemID).First(&cartItem).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("item not found in cart")
