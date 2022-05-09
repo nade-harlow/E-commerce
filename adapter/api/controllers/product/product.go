@@ -3,6 +3,7 @@ package product
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/nade-harlow/E-commerce/core/models"
+	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils/response"
 	"github.com/nade-harlow/E-commerce/ports/services"
 	"log"
@@ -110,7 +111,6 @@ func (products *ProductController) UpdateProduct() gin.HandlerFunc {
 			"Quantity":          int16(qty),
 		}
 		err = products.ProductService.UpdateProduct(productID, product)
-		//err = products.ProductService.UpdateProduct(&product)
 		if err != nil {
 			log.Println(err.Error())
 			response.Json(c, 500, "Error updating Product", nil, err.Error())
@@ -135,9 +135,9 @@ func (products *ProductController) DeleteProduct() gin.HandlerFunc {
 
 func (products *ProductController) AddProductCategory() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		category := models.ProductCategory{}
+		category := requests.ProductCategoryRequest{}
 		c.ShouldBindJSON(&category)
-		err := products.ProductService.CreateProductCategory(&category)
+		err := products.ProductService.CreateProductCategory(category)
 		if err != nil {
 			log.Println(err.Error())
 			response.Json(c, 500, "Error creating Product Category", nil, err.Error())
