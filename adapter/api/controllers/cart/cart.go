@@ -26,7 +26,11 @@ func (cart *CartController) GetCart() gin.HandlerFunc {
 			response.Json(c, 500, "error fetching cart", nil, err.Error())
 			return
 		}
-		response.Json(c, 200, "cart fetched", item, nil)
+		var total float32
+		for _, v := range item {
+			total += v.SubTotal
+		}
+		response.Json(c, 200, "cart fetched", gin.H{"items": item, "total": total}, nil)
 	}
 }
 
