@@ -7,24 +7,22 @@ import (
 
 type User struct {
 	Model
-	FirstName       string         `json:"first_name" validate:"required"`
-	LastName        string         `json:"last_name"`
-	Username        string         `gorm:"unique" json:"username"`
-	Role            string         `json:"role,omitempty"`
-	Email           string         `gorm:"unique" json:"email" validate:"required,email"`
-	Password        string         `json:"password,omitempty" validate:"required,min=8,eqfield=ConfirmPassword"`
-	ConfirmPassword string         `json:"confirm_password,omitempty" gorm:"-" validate:"required,min=8,eqfield=Password"`
-	Telephone       string         `json:"telephone" validate:"required"`
-	IsVerified      bool           `json:"is_verified"`
-	CreatedAt       time.Time      `json:"created_at"`
-	UpdatedAt       time.Time      `json:"updated_at"`
-	DeletedAt       gorm.DeletedAt `gorm:"index" json:"-" `
+	FirstName  string         `json:"first_name" validate:"required"`
+	LastName   string         `json:"last_name"`
+	Role       string         `json:"role,omitempty"`
+	Email      string         `gorm:"unique" json:"email"`
+	Password   string         `json:"-"`
+	Telephone  string         `json:"telephone" `
+	IsVerified bool           `json:"is_verified"`
+	CreatedAt  time.Time      `json:"created_at"`
+	UpdatedAt  time.Time      `json:"updated_at"`
+	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-" `
 }
 
 type UserAddress struct {
 	Model
 	UserID       string         `json:"user_id"`
-	User         User           `json:"-"`
+	User         User           `json:"user"`
 	AddressLine1 string         `json:"address_line_1" validate:"required"`
 	AddressLine2 string         `json:"address_line_2"`
 	City         string         `json:"city" validate:"required"`
