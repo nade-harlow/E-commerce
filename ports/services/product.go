@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/nade-harlow/E-commerce/core/models"
+	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils"
 	repository2 "github.com/nade-harlow/E-commerce/ports/repositories"
 	"log"
@@ -21,7 +22,7 @@ type ProductServices interface {
 	GetAllProducts() ([]models.Product, error)
 	UpdateProduct(productID string, product map[string]interface{}) error
 	DeleteProduct(productID string) error
-	CreateProductCategory(category *models.ProductCategory) error
+	CreateProductCategory(category requests.ProductCategoryRequest) error
 	DeleteProductCategory(categoryID string) error
 	UploadFileToS3(productImages []*multipart.FileHeader) ([]models.ProductImage, error)
 	CreateS3Bucket(session *session.Session, bucketName string) error
@@ -57,8 +58,12 @@ func (p ProductService) DeleteProduct(productID string) error {
 	return p.repository.DeleteProduct(productID)
 }
 
-func (p *ProductService) CreateProductCategory(category *models.ProductCategory) error {
-	return p.repository.CreateProductCategory(category)
+func (p *ProductService) CreateProductCategory(category requests.ProductCategoryRequest) error {
+	cate := &models.ProductCategory{
+		Name:        category.Name,
+		Description: category.Description,
+	}
+	return p.repository.CreateProductCategory(cate)
 }
 
 func (p ProductService) DeleteProductCategory(categoryID string) error {
