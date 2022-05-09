@@ -5,7 +5,6 @@ import (
 	"github.com/nade-harlow/E-commerce/adapter/repository/database/redisql"
 	"github.com/nade-harlow/E-commerce/core/models"
 	repository2 "github.com/nade-harlow/E-commerce/ports/repositories"
-	"log"
 )
 
 type CartServices interface {
@@ -34,7 +33,6 @@ func (cart *CartService) GetCart() ([]models.CartItem, error) {
 }
 
 func (cart *CartService) AddItem(productID string) error {
-	log.Println("productID: ", productID)
 	ok, value := redisql.ValidateRedisKey("userID")
 	item := models.CartItem{
 		UserID:    value.(string),
