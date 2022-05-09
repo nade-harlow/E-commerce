@@ -12,6 +12,7 @@ type CartServices interface {
 	AddItem(productID string) error
 	RemoveItem(ItemID string) error
 	UpdateItem(itemId string, quantity int16) error
+	CheckOut() (map[string]interface{}, error)
 }
 
 type CartService struct {
@@ -60,4 +61,12 @@ func (cart *CartService) UpdateItem(itemId string, quantity int16) error {
 	}
 	return errors.New("userID not found: session expired")
 
+}
+
+func (cart CartService) CheckOut() (map[string]interface{}, error) {
+	ok, value := redisql.ValidateRedisKey("userID")
+	if ok {
+		return cart.repository.CheckOut(value.(string))
+	}
+	return nil, errors.New("userID not found: session expired")
 }
