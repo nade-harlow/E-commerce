@@ -37,4 +37,5 @@ func CartRoutes(r *gin.Engine, cc *cart.CartController) {
 	r.GET("/cart", middleware.AuthorizeToken(), cc.GetCart())
 	r.PUT("/update/cart/:id/:quantity", middleware.AuthorizeToken(), cc.UpdateCart())
 	r.DELETE("/delete/cart/:id", middleware.AuthorizeToken(), cc.DeleteCart())
+	r.GET("/cart/checkout", middleware.AuthorizeToken(), cc.CheckOut())
 }
