@@ -9,7 +9,8 @@ type CartItem struct {
 	UserID    string    `json:"user_id"`
 	User      User      `json:"-"`
 	ProductID string    `json:"product_id"`
-	Product   Product   `json:"-"`
+	Product   Product   `json:"product"`
+	SubTotal  float32   `json:"sub_total"`
 	Quantity  int16     `json:"quantity"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
