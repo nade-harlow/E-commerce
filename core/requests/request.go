@@ -24,3 +24,18 @@ type UserAddressRequest struct {
 	Country      string `json:"country" validate:"required"`
 	Mobile       string `json:"mobile"`
 }
+
+type ProductRequest struct {
+	Name        string ` json:"name"`
+	Description string ` json:"description"`
+	Sku         string ` json:"sku"`
+	//ProductImage      []ProductImage  ` json:"product_image,omitempty"`
+	ProductCategoryID string  ` json:"category_id"`
+	Price             float32 `json:"price"`
+	Quantity          int16   `json:"quantity"`
+}
+
+type ProductCategoryRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
