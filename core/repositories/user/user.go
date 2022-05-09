@@ -55,7 +55,6 @@ func (repo *UserRepository) SignUpUser(user *models.User) error {
 	user.Email = strings.ToLower(user.Email)
 	user.FirstName = strings.ToLower(user.FirstName)
 	user.LastName = strings.ToLower(user.LastName)
-	user.Username = strings.ToLower(user.Username)
 
 	userByEmail, err := repo.GetUserByEmail(user.Email)
 	if err != nil {
@@ -65,13 +64,6 @@ func (repo *UserRepository) SignUpUser(user *models.User) error {
 		return errors.New("user with this email already exists")
 	}
 
-	username, err := repo.GetUserByUsername(user.Username)
-	if err != nil {
-		return err
-	}
-	if username != nil {
-		return errors.New("user with this username already exists")
-	}
 	user.Password, err = utils.HashPassword(user.Password)
 	if err != nil {
 		return errors.New("error hashing password")
