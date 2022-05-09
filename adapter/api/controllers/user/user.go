@@ -23,7 +23,7 @@ func NewUserController(productService services.UserServices) *UserController {
 
 func (user *UserController) SignUpUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var userRequest models.User
+		var userRequest requests.UserSignUpRequest
 		if err := c.ShouldBindJSON(&userRequest); err != nil {
 			response.Json(c, 500, "Error binding json", nil, err.Error())
 			return
@@ -32,7 +32,7 @@ func (user *UserController) SignUpUser() gin.HandlerFunc {
 			response.Json(c, 400, "Error validating data", nil, err)
 			return
 		}
-		if err := user.UserService.SignUpUser(&userRequest); err != nil {
+		if err := user.UserService.SignUpUser(userRequest); err != nil {
 			response.Json(c, 500, "Error creating user", nil, err.Error())
 			return
 		}
@@ -85,7 +85,8 @@ func (user *UserController) VerifyUser() gin.HandlerFunc {
 
 func (user UserController) AddUserAddress() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var userRequest models.UserAddress
+		log.Println("AddUserAddress")
+		var userRequest requests.UserAddressRequest
 		userID := c.Param("id")
 		userRequest.UserID = userID
 		if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -96,7 +97,7 @@ func (user UserController) AddUserAddress() gin.HandlerFunc {
 			response.Json(c, 400, "Error validating data", nil, err)
 			return
 		}
-		if err := user.UserService.AddUserAddress(&userRequest); err != nil {
+		if err := user.UserService.AddUserAddress(userRequest); err != nil {
 			response.Json(c, 500, "Error adding user address", nil, err.Error())
 			return
 		}
