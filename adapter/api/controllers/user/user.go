@@ -2,7 +2,6 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/nade-harlow/E-commerce/core/models"
 	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils"
 	"github.com/nade-harlow/E-commerce/core/utils/response"
@@ -85,7 +84,6 @@ func (user *UserController) VerifyUser() gin.HandlerFunc {
 
 func (user UserController) AddUserAddress() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log.Println("AddUserAddress")
 		var userRequest requests.UserAddressRequest
 		userID := c.Param("id")
 		userRequest.UserID = userID
@@ -107,7 +105,7 @@ func (user UserController) AddUserAddress() gin.HandlerFunc {
 
 func (user UserController) UpdateUserAddress() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var userRequest models.UserAddress
+		var userRequest requests.UserAddressRequest
 		userID := c.Param("id")
 		userRequest.UserID = userID
 		if err := c.ShouldBindJSON(&userRequest); err != nil {
@@ -118,7 +116,7 @@ func (user UserController) UpdateUserAddress() gin.HandlerFunc {
 			response.Json(c, 400, "Error validating data", nil, err)
 			return
 		}
-		if err := user.UserService.UpdateUserAddress(&userRequest); err != nil {
+		if err := user.UserService.UpdateUserAddress(userRequest); err != nil {
 			response.Json(c, 500, "Error updating user address", nil, err.Error())
 			return
 		}
@@ -153,6 +151,7 @@ func (user UserController) ResetPassword() gin.HandlerFunc {
 		log.Println(userID)
 		if password != confirm {
 			response.Json(c, 400, "Passwords do not match", nil, "Passwords do not match")
+			return
 		}
 		if err := user.UserService.ResetUserPassword(userID, password); err != nil {
 			response.Json(c, 500, "Error resetting password", nil, err.Error())
