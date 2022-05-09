@@ -21,7 +21,7 @@ type UserServices interface {
 	SignInUser(user *requests.UserLoginRequest) (*models.User, error)
 	VerifyUser(code string) error
 	AddUserAddress(address requests.UserAddressRequest) error
-	UpdateUserAddress(user *models.UserAddress) error
+	UpdateUserAddress(user requests.UserAddressRequest) error
 	ForgotPassword(userID, email string) error
 	ResetUserPassword(userID string, password string) error
 }
@@ -109,8 +109,17 @@ func (user *UserService) AddUserAddress(address requests.UserAddressRequest) err
 	return user.repository.AddUserAddress(userAddress)
 }
 
-func (user *UserService) UpdateUserAddress(address *models.UserAddress) error {
-	return user.repository.UpdateUserAddress(address)
+func (user *UserService) UpdateUserAddress(address requests.UserAddressRequest) error {
+	userAddress := &models.UserAddress{
+		UserID:       address.UserID,
+		AddressLine1: address.AddressLine1,
+		AddressLine2: address.AddressLine2,
+		City:         address.City,
+		PostalCode:   address.PostalCode,
+		Country:      address.Country,
+		Mobile:       address.Mobile,
+	}
+	return user.repository.UpdateUserAddress(userAddress)
 }
 
 func (user *UserService) ResetUserPassword(userID string, password string) error {
