@@ -27,9 +27,11 @@ func Start() {
 	db := client.InitializeConnection()
 	mg := notification.MailgunRepository{}
 	mg.NewMailgunRepository()
+	nt := notification.TwilloRepository{}
+	nt.NewTwillo()
 
 	products := product2.NewProductController(services.NewProductService(product.New(db)))
-	users := user2.NewUserController(services.NewUserService(user.New(db)))
+	users := user2.NewUserController(services.NewUserService(user.New(db), &mg, &nt))
 	cart := cart2.NewCartController(services.NewCartService(cart.New(db)))
 
 	routes.CartRoutes(router, cart)
