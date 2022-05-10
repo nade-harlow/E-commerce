@@ -8,6 +8,7 @@ import (
 	user2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/user"
 	"github.com/nade-harlow/E-commerce/adapter/api/routes"
 	"github.com/nade-harlow/E-commerce/adapter/repository/database/client"
+	"github.com/nade-harlow/E-commerce/adapter/repository/database/redisql"
 	"github.com/nade-harlow/E-commerce/adapter/repository/notification"
 	"github.com/nade-harlow/E-commerce/core/repositories/cart"
 	"github.com/nade-harlow/E-commerce/core/repositories/product"
@@ -27,12 +28,15 @@ func Start() {
 	db := client.InitializeConnection()
 	mg := notification.MailgunRepository{}
 	mg.NewMailgunRepository()
-	nt := notification.TwilloRepository{}
-	nt.NewTwillo()
+	tr := notification.TwilloRepository{}
+	tr.NewTwillo()
+	r := redisql.Redis{}
+	r.NewRedisClient()
+	r.PingRedis()
 
 	products := product2.NewProductController(services.NewProductService(product.New(db)))
-	users := user2.NewUserController(services.NewUserService(user.New(db), &mg, &nt))
-	cart := cart2.NewCartController(services.NewCartService(cart.New(db)))
+	users := user2.NewUserController(services.NewUserService(user.New(db), &mg, &tr, &r))
+	cart := cart2.NewCartController(services.NewCartService(cart.New(db), &r))
 
 	routes.CartRoutes(router, cart)
 	routes.ProductRoutes(router, products)
