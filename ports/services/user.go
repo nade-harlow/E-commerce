@@ -3,7 +3,6 @@ package services
 import (
 	"fmt"
 	"github.com/nade-harlow/E-commerce/adapter/repository/database/redisql"
-	"github.com/nade-harlow/E-commerce/adapter/repository/notification"
 	"github.com/nade-harlow/E-commerce/core/models"
 	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils"
@@ -27,17 +26,20 @@ type UserServices interface {
 }
 
 type UserService struct {
-	repository   repository2.UserRepository
-	notification notification.MailgunRepository
+	repository repository2.UserRepository
+	mail       repository2.MailRepository
+	sms        repository2.TwilloRepository
 }
 
 const SmsOtpMessage = "Please use the OTP Code: %s to complete your registration. Code expires in five minutes"
 
 var BaseURL = os.Getenv("BASE_URL")
 
-func NewUserService(repository repository2.UserRepository) UserServices {
+func NewUserService(repository repository2.UserRepository, mail repository2.MailRepository, sms repository2.TwilloRepository) UserServices {
 	return &UserService{
 		repository: repository,
+		mail:       mail,
+		sms:        sms,
 	}
 }
 
@@ -70,7 +72,7 @@ func (userr *UserService) SignUpUser(users requests.UserSignUpRequest) error {
 	}
 	log.Println("otp: ", otp)
 	redisql.SetRedisKey(otp, user.ID, time.Minute*5)
-	return notification.SendSms(user.Telephone, msg)
+	return userr.sms.SendSms(user.Telephone, msg)
 }
 
 func (userr *UserService) SignInUser(user *requests.UserLoginRequest) (*models.User, error) {
@@ -137,7 +139,7 @@ func (user UserService) ForgotPassword(userID, email string) error {
 		ID:      userID,
 	}
 	body := utils.ParseTemplate(data)
-	err := user.notification.SendMail(email, subject, body)
+	err := user.mail.SendMail(email, subject, body)
 	if err != nil {
 		return err
 	}
