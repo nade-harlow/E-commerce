@@ -9,41 +9,37 @@ import (
 	"time"
 )
 
-// It creates a new Redis client and returns it
-func connectRedis() *redis.Client {
-	client := redis.NewClient(&redis.Options{
-		Addr:        os.Getenv("REDIS_ADDR"),
+type Redis struct {
+	Client *redis.Client
+}
+
+// NewRedisClient Creating a new redis client.
+func (r *Redis) NewRedisClient() {
+	r.Client = redis.NewClient(&redis.Options{
+		Addr:        os.Getenv("REDIS_URL"),
 		Password:    os.Getenv("REDIS_PASSWORD"),
 		DialTimeout: time.Second * 20,
 		DB:          0,
 	})
+}
 
-	pong, err := client.Ping(context.Background()).Result()
+// PingRedis Checking if the redis client is connected to the redis server.
+func (r *Redis) PingRedis() {
+	pong, err := r.Client.Ping(context.Background()).Result()
 	fmt.Println(pong, err)
-
-	return client
 }
 
 //RemoveRedisKey deletes a key from the db
-func RemoveRedisKey(key string) {
-	redis := connectRedis()
-
-	defer redis.Close()
-
-	err := redis.Del(context.Background(), key).Err()
-
+func (r *Redis) RemoveRedisKey(key string) {
+	err := r.Client.Del(context.Background(), key).Err()
 	if err != nil {
 		log.Println(err)
 	}
 }
 
 //ValidateRedisKey checks if a key exist and returns its value
-func ValidateRedisKey(key string) (valid bool, value interface{}) {
-	redis := connectRedis()
-
-	defer redis.Close()
-	value, err := redis.Get(context.Background(), key).Result()
-
+func (r *Redis) ValidateRedisKey(key string) (valid bool, value interface{}) {
+	value, err := r.Client.Get(context.Background(), key).Result()
 	if err != nil {
 		log.Println(err)
 		return false, nil
@@ -52,10 +48,8 @@ func ValidateRedisKey(key string) (valid bool, value interface{}) {
 }
 
 //SetRedisKey set a redis key and value to the application redis instance
-func SetRedisKey(key string, value interface{}, expiration time.Duration) (valid bool, result interface{}) {
-	redis := connectRedis()
-
-	result, err := redis.Set(context.Background(), key, value, expiration).Result()
+func (r *Redis) SetRedisKey(key string, value interface{}, expiration time.Duration) (valid bool, result interface{}) {
+	result, err := r.Client.Set(context.Background(), key, value, expiration).Result()
 
 	if err != nil {
 		fmt.Println(err)
