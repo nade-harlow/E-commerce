@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"github.com/nade-harlow/E-commerce/adapter/repository/database/redisql"
 	"github.com/nade-harlow/E-commerce/core/models"
 	"github.com/nade-harlow/E-commerce/core/requests"
 	"github.com/nade-harlow/E-commerce/core/utils"
@@ -29,17 +28,19 @@ type UserService struct {
 	repository repository2.UserRepository
 	mail       repository2.MailRepository
 	sms        repository2.TwilloRepository
+	redis      repository2.Redis
 }
 
 const SmsOtpMessage = "Please use the OTP Code: %s to complete your registration. Code expires in five minutes"
 
 var BaseURL = os.Getenv("BASE_URL")
 
-func NewUserService(repository repository2.UserRepository, mail repository2.MailRepository, sms repository2.TwilloRepository) UserServices {
+func NewUserService(repository repository2.UserRepository, mail repository2.MailRepository, sms repository2.TwilloRepository, redis repository2.Redis) UserServices {
 	return &UserService{
 		repository: repository,
 		mail:       mail,
 		sms:        sms,
+		redis:      redis,
 	}
 }
 
@@ -71,7 +72,7 @@ func (userr *UserService) SignUpUser(users requests.UserSignUpRequest) error {
 		return err
 	}
 	log.Println("otp: ", otp)
-	redisql.SetRedisKey(otp, user.ID, time.Minute*5)
+	userr.redis.SetRedisKey(otp, user.ID, time.Minute*5)
 	return userr.sms.SendSms(user.Telephone, msg)
 }
 
@@ -80,17 +81,17 @@ func (userr *UserService) SignInUser(user *requests.UserLoginRequest) (*models.U
 	if err != nil {
 		return nil, err
 	}
-	redisql.SetRedisKey("userID", userData.ID, time.Hour*24)
+	userr.redis.SetRedisKey("userID", userData.ID, time.Hour*24)
 	return userData, nil
 }
 
 func (user *UserService) VerifyUser(code string) error {
-	valid, value := redisql.ValidateRedisKey(code)
+	valid, value := user.redis.ValidateRedisKey(code)
 	if !valid {
 		return fmt.Errorf("invalid OTP")
 	}
 	log.Println(value.(string))
-	go redisql.RemoveRedisKey(code)
+	go user.redis.RemoveRedisKey(code)
 	err := user.repository.VerifyUser(value.(string))
 	if err != nil {
 		return err
