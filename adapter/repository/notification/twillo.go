@@ -7,14 +7,22 @@ import (
 	"os"
 )
 
-func SendSms(phone string, message string) error {
+type TwilloRepository struct {
+	client *twilio.RestClient
+}
+
+func (t *TwilloRepository) NewTwillo() {
 	client := twilio.NewRestClient()
+	t.client = client
+}
+
+func (t *TwilloRepository) SendSms(phone string, message string) error {
 	params := &openapi.CreateMessageParams{}
 	params.SetTo(phone)
 	params.SetFrom(os.Getenv("TWILIO_PHONE_NUMBER"))
 	params.SetBody(message)
 
-	_, err := client.ApiV2010.CreateMessage(params)
+	_, err := t.client.ApiV2010.CreateMessage(params)
 	if err != nil {
 		log.Println(err.Error())
 		return err
