@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"github.com/nade-harlow/E-commerce/adapter/repository/database/redisql"
 	"github.com/nade-harlow/E-commerce/core/models"
 	repository2 "github.com/nade-harlow/E-commerce/ports/repositories"
 )
@@ -17,16 +16,18 @@ type CartServices interface {
 
 type CartService struct {
 	repository repository2.CartRepository
+	redis      repository2.Redis
 }
 
-func NewCartService(repository repository2.CartRepository) *CartService {
+func NewCartService(repository repository2.CartRepository, redis repository2.Redis) *CartService {
 	return &CartService{
 		repository: repository,
+		redis:      redis,
 	}
 }
 
 func (cart *CartService) GetCart() ([]models.CartItem, error) {
-	ok, value := redisql.ValidateRedisKey("userID")
+	ok, value := cart.redis.ValidateRedisKey("userID")
 	if ok {
 		return cart.repository.GetCart(value.(string))
 	}
@@ -34,7 +35,7 @@ func (cart *CartService) GetCart() ([]models.CartItem, error) {
 }
 
 func (cart *CartService) AddItem(productID string) error {
-	ok, value := redisql.ValidateRedisKey("userID")
+	ok, value := cart.redis.ValidateRedisKey("userID")
 	item := models.CartItem{
 		UserID:    value.(string),
 		ProductID: productID,
@@ -47,7 +48,7 @@ func (cart *CartService) AddItem(productID string) error {
 }
 
 func (cart *CartService) RemoveItem(ItemID string) error {
-	ok, value := redisql.ValidateRedisKey("userID")
+	ok, value := cart.redis.ValidateRedisKey("userID")
 	if ok {
 		return cart.repository.RemoveItem(value.(string), ItemID)
 	}
@@ -55,7 +56,7 @@ func (cart *CartService) RemoveItem(ItemID string) error {
 }
 
 func (cart *CartService) UpdateItem(itemId string, quantity int16) error {
-	ok, value := redisql.ValidateRedisKey("userID")
+	ok, value := cart.redis.ValidateRedisKey("userID")
 	if ok {
 		return cart.repository.UpdateItem(value.(string), itemId, quantity)
 	}
@@ -64,7 +65,7 @@ func (cart *CartService) UpdateItem(itemId string, quantity int16) error {
 }
 
 func (cart CartService) CheckOut() (map[string]interface{}, error) {
-	ok, value := redisql.ValidateRedisKey("userID")
+	ok, value := cart.redis.ValidateRedisKey("userID")
 	if ok {
 		return cart.repository.CheckOut(value.(string))
 	}
