@@ -50,7 +50,6 @@ func (mg *MailgunRepository) SendMessageWithTemplate(email, subject string) (str
 }
 
 func (mg *MailgunRepository) SendMail(email, subject, body string) error {
-	mg.client = mailgun.NewMailgun(os.Getenv("MG_DOMAIN"), os.Getenv("MG_API_KEY"))
 
 	m := mg.client.NewMessage(os.Getenv("MG_EMAIL_FROM"), subject, body, email)
 	m.SetHtml(body)
