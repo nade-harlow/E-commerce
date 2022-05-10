@@ -12,7 +12,6 @@ func AuthorizeToken() gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 		token, err := utils.ParseToken(authHeader)
 		if err != nil {
-			//utils.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized")
 			c.AbortWithError(http.StatusUnauthorized, err)
 			return
 		}
@@ -24,4 +23,22 @@ func AuthorizeToken() gin.HandlerFunc {
 		c.Next()
 	}
 
+}
+
+func AuthorizeAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		token, err := utils.ParseToken(authHeader)
+		if err != nil {
+			c.AbortWithError(http.StatusUnauthorized, err)
+			return
+		}
+		claims := token.Claims.(jwt.MapClaims)
+		role := claims["role"].(string)
+		if role != "admin" {
+			c.AbortWithError(http.StatusUnauthorized, err)
+		}
+
+		c.Next()
+	}
 }
