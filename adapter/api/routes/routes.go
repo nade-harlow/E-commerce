@@ -13,12 +13,12 @@ func ProductRoutes(r *gin.Engine, pc *product.ProductController) {
 		c.JSON(200, map[string]string{"message": "Hello World!"})
 	})
 	r.GET("/products/:id", pc.GetProduct())
-	r.GET("/products", pc.GetAllProduct())
-	r.POST("/products/add", middleware.AuthorizeToken(), pc.AddProduct())
-	r.POST("/products/category/add", middleware.AuthorizeToken(), pc.AddProductCategory())
-	r.PUT("/products/update/:id", middleware.AuthorizeToken(), pc.UpdateProduct())
-	r.DELETE("/products/category/remove/:id", middleware.AuthorizeToken(), pc.RemoveProductCategory())
-	r.DELETE("/products/delete/:id", middleware.AuthorizeToken(), pc.DeleteProduct())
+	r.GET("/products", middleware.AuthorizeAdmin(), pc.GetAllProduct())
+	r.POST("/products/add", middleware.AuthorizeToken(), middleware.AuthorizeAdmin(), pc.AddProduct())
+	r.POST("/products/category/add", middleware.AuthorizeToken(), middleware.AuthorizeAdmin(), pc.AddProductCategory())
+	r.PUT("/products/update/:id", middleware.AuthorizeToken(), middleware.AuthorizeAdmin(), pc.UpdateProduct())
+	r.DELETE("/products/category/remove/:id", middleware.AuthorizeToken(), middleware.AuthorizeAdmin(), pc.RemoveProductCategory())
+	r.DELETE("/products/delete/:id", middleware.AuthorizeToken(), middleware.AuthorizeAdmin(), pc.DeleteProduct())
 }
 
 func UserRoutes(r *gin.Engine, uc *user.UserController) {
