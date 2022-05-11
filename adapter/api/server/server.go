@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	cart2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/cart"
 	product2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/product"
@@ -30,13 +32,40 @@ func Start() {
 	mg.NewMailgunRepository()
 	tr := notification.TwilloRepository{}
 	tr.NewTwillo()
-	r := redisql.Redis{}
-	r.NewRedisClient()
-	r.PingRedis()
+	redis := redisql.Redis{}
+	redis.NewRedisClient()
+	redis.PingRedis()
 
 	products := product2.NewProductController(services.NewProductService(product.New(db)))
-	users := user2.NewUserController(services.NewUserService(user.New(db), &mg, &tr, &r))
-	cart := cart2.NewCartController(services.NewCartService(cart.New(db), &r))
+	users := user2.NewUserController(services.NewUserService(user.New(db), &mg, &tr, &redis))
+	cart := cart2.NewCartController(services.NewCartService(cart.New(db), &redis))
+
+	// LoggerWithFormatter middleware will write the logs to gin.DefaultWriter
+	// By default gin.DefaultWriter = os.Stdout
+	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		// your custom format
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
+			param.Method,
+			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
+			param.ErrorMessage,
+		)
+	}))
+	router.Use(gin.Recovery())
+	// setup cors
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	routes.CartRoutes(router, cart)
 	routes.ProductRoutes(router, products)
