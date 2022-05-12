@@ -22,6 +22,7 @@ type UserServices interface {
 	UpdateUserAddress(user requests.UserAddressRequest) error
 	ForgotPassword(userID, email string) error
 	ResetUserPassword(userID string, password string) error
+	ClearUserCache()
 }
 
 type UserService struct {
@@ -145,4 +146,8 @@ func (user UserService) ForgotPassword(userID, email string) error {
 		return err
 	}
 	return user.repository.AddRecoveryPassword(userID, email)
+}
+
+func (user UserService) ClearUserCache() {
+	user.redis.RemoveRedisKey("userID")
 }
