@@ -12,6 +12,8 @@ func main() {
 	logger := logrus.New()
 	logger.Formatter = &logrus.JSONFormatter{PrettyPrint: true}
 	log.SetOutput(logger.Writer())
+	// If we crash the go code, we get the file name and line number
+	log.SetFlags(log.LstdFlags | log.Lshortfile | log.Llongfile)
 
 	err := godotenv.Load()
 	if err != nil && os.Getenv("ENV") != "dev" {
