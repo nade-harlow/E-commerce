@@ -30,6 +30,7 @@ func UserRoutes(r *gin.Engine, uc *user.UserController) {
 	r.GET("reset/password/:id", uc.RecoverPassword())
 	r.POST("/reset/password/:id", uc.ResetPassword())
 	r.PUT("/update/address/:id", middleware.AuthorizeToken(), uc.UpdateUserAddress())
+	r.GET("logout", middleware.AuthorizeToken(), uc.LogoutUser())
 }
 
 func CartRoutes(r *gin.Engine, cc *cart.CartController) {
