@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	cart2 "github.com/nade-harlow/E-commerce/adapter/api/controllers/cart"
@@ -24,9 +23,7 @@ import (
 )
 
 func Start() {
-	router := gin.Default()
-	router.LoadHTMLFiles("core/template/change_password.html")
-
+	router := setupRoute()
 	db := client.InitializeConnection()
 	mg := notification.MailgunRepository{}
 	mg.NewMailgunRepository()
@@ -38,36 +35,9 @@ func Start() {
 
 	products := product2.NewProductController(services.NewProductService(product.New(db)))
 	users := user2.NewUserController(services.NewUserService(user.New(db), &mg, &tr, &redis))
-	cart := cart2.NewCartController(services.NewCartService(cart.New(db), &redis))
+	carts := cart2.NewCartController(services.NewCartService(cart.New(db), &redis))
 
-	// LoggerWithFormatter middleware will write the logs to gin.DefaultWriter
-	// By default gin.DefaultWriter = os.Stdout
-	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		// your custom format
-		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
-			param.ClientIP,
-			param.TimeStamp.Format(time.RFC1123),
-			param.Method,
-			param.Path,
-			param.Request.Proto,
-			param.StatusCode,
-			param.Latency,
-			param.Request.UserAgent(),
-			param.ErrorMessage,
-		)
-	}))
-	router.Use(gin.Recovery())
-	// setup cors
-	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
-		AllowHeaders:     []string{"*"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
-
-	routes.CartRoutes(router, cart)
+	routes.CartRoutes(router, carts)
 	routes.ProductRoutes(router, products)
 	routes.UserRoutes(router, users)
 	port := ":" + os.Getenv("PORT")
@@ -107,4 +77,20 @@ func Start() {
 		log.Fatalf("An error occurred: %s", err)
 	}
 	log.Printf("Server exits successfully")
+}
+
+func setupRoute() *gin.Engine {
+	router := gin.Default()
+	router.LoadHTMLFiles("core/template/change_password.html")
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
+	return router
 }
