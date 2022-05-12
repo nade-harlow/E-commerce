@@ -18,7 +18,7 @@ func AuthorizeToken() gin.HandlerFunc {
 		claims := token.Claims.(jwt.MapClaims)
 		userId := claims["user_id"].(string)
 
-		c.Set("userId", userId)
+		c.Set("userID", userId)
 
 		c.Next()
 	}
