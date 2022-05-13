@@ -6,7 +6,7 @@ type UserSignUpRequest struct {
 	Role            string `json:"role,omitempty"`
 	Email           string `gorm:"unique" json:"email" validate:"required,email"`
 	Password        string `json:"password,omitempty" validate:"required,min=8,eqfield=ConfirmPassword"`
-	ConfirmPassword string `json:"confirm_password,omitempty" gorm:"-" validate:"required,min=8,eqfield=Password"`
+	ConfirmPassword string `json:"confirm_password,omitempty" validate:"required,min=8,eqfield=Password"`
 	Telephone       string `json:"telephone" validate:"required"`
 }
 
