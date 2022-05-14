@@ -4,7 +4,7 @@ type UserSignUpRequest struct {
 	FirstName       string `json:"first_name" validate:"required"`
 	LastName        string `json:"last_name"`
 	Role            string `json:"role,omitempty"`
-	Email           string `gorm:"unique" json:"email" validate:"required,email"`
+	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password,omitempty" validate:"required,min=8,eqfield=ConfirmPassword"`
 	ConfirmPassword string `json:"confirm_password,omitempty" validate:"required,min=8,eqfield=Password"`
 	Telephone       string `json:"telephone" validate:"required"`
